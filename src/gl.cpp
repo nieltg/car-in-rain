@@ -18,14 +18,16 @@ void resize (int width, int height) {
 }
 
 void render (void) {
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glPointSize(1000);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     unsigned int tick = SDL_GetTicks();
 
     glLoadIdentity();
     //glRotatef(tick % 3600 * 0.1f, 0.0, 0.0, 1.0);
-
-    glBegin(GL_TRIANGLES);
+    houses();
+    /*glBegin(GL_TRIANGLES);
     glColor3f ( 1.0,1.0,0.0);
     glVertex3f(-0.2,0.2, -3.0);
     glColor3f ( 1.0,0.0,0.0);
@@ -39,12 +41,29 @@ void render (void) {
     glVertex3f( -0.4, -0.4, -3.0);
     glColor3f ( 1.0,1.0,1.0);
     glVertex3f( -0.6,-0.6, -3.0);
-    glEnd();
+    glEnd();*/
 }
 
 void houses(void) {
-    glBegin(GL_POLYGON);
-    glEnd();
+    GLfloat vertices1[]= {
+         0.0, 0.0,0.0,
+         0.0,20.0,0.0,
+        20.0,30.0,0.0,
+        20.0,40.0,0.0,
+        40.0,40.0,0.0,
+        40.0,10.0,0.0,
+        60.0,10.0,0.0,
+        60.0, 0.0,0.0
+    }
+    glPushMatrix();
+        glTranslatef(-1,0,0);
+        glBegin(GL_POLYGON);
+            for (int i=0; i<8; i++) {
+                glVertex3f(vertices1[i*3],vertices[(i*3)+1],vertices[(i*3)+2]);
+                glColor3f(1.0,1.0,0.0);
+            }
+        glEnd();
+    glPopMatrix();
 }
 
 void sky(void) {
