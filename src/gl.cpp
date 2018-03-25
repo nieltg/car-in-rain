@@ -27,6 +27,9 @@ void render (void) {
     glLoadIdentity();
     //glRotatef(tick % 3600 * 0.1f, 0.0, 0.0, 1.0);
     houses();
+    sky();
+    road();
+    car();
     /*glBegin(GL_TRIANGLES);
     glColor3f ( 1.0,1.0,0.0);
     glVertex3f(-0.2,0.2, -3.0);
@@ -46,14 +49,14 @@ void render (void) {
 
 void houses(void) {
     GLfloat vertices1[]= {
-         0.0, 0.0,0.0,
-         0.0,20.0,0.0,
-        20.0,30.0,0.0,
-        20.0,40.0,0.0,
-        40.0,40.0,0.0,
-        40.0,10.0,0.0,
-        60.0,10.0,0.0,
-        60.0, 0.0,0.0
+         0.0,300.0,0.0,
+         0.0,320.0,0.0,
+        20.0,330.0,0.0,
+        20.0,340.0,0.0,
+        40.0,340.0,0.0,
+        40.0,310.0,0.0,
+        60.0,310.0,0.0,
+        60.0,300.0,0.0
     }
     glPushMatrix();
         glTranslatef(-1,0,0);
@@ -67,15 +70,59 @@ void houses(void) {
 }
 
 void sky(void) {
-
+    GLfloat vertices1[]= {
+            0.0, 300.0,-1.0,
+            0.0,1000.0,-1.0,
+         1000.0,1000.0,-1.0,
+         1000.0, 300.0,-1.0
+    }
+    glPushMatrix();
+        glBegin(GL_POLYGON);
+            for (int i=0; i<4; i++) {
+                glVertex3f(vertices1[i*3],vertices[(i*3)+1],vertices[(i*3)+2]);
+                glColor3f(0.0,0.0,1.0);
+            }
+        glEnd();
+    glPopMatrix();
 }
 
 void road (void) {
-
+    GLfloat vertices1[]= {
+            0.0,   0.0,-1.0,
+            0.0, 300.0,-1.0,
+         1000.0, 300.0,-1.0,
+         1000.0,   0.0,-1.0
+    }
+    glPushMatrix();
+        glBegin(GL_POLYGON);
+            for (int i=0; i<4; i++) {
+                glVertex3f(vertices1[i*3],vertices[(i*3)+1],vertices[(i*3)+2]);
+                glColor3f(0.5,0.5,0.5);
+            }
+        glEnd();
+    glPopMatrix();
 }
 
 void car(void) {
-
+    GLfloat vertices1[]= {
+        100.0, 150.0, 1.0,
+        100.0, 500.0, 1.0,
+        300.0, 500.0, 1.0,
+        300.0, 700.0, 1.0,
+        600.0, 700.0, 1.0,
+        600.0, 500.0, 1.0,
+        900.0, 500.0, 1.0,
+        900.0, 150.0, 1.0,
+    }
+    glPushMatrix();
+        glBegin(GL_POLYGON);
+            for (int i=0; i<8; i++) {
+                glVertex3f(vertices1[i*3],vertices[(i*3)+1],vertices[(i*3)+2]);
+                glColor3f(0.0,1.0,0.0);
+            }
+        glEnd();
+        tires();
+    glPopMatrix();
 }
 
 void tires(void) {
