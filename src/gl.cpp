@@ -1,6 +1,7 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <SDL2/SDL.h>
+#include "gl.h"
 
 void init (void) {
 }
@@ -58,7 +59,7 @@ void houses(float movement) {
         40.0,310.0,0.0,
         60.0,310.0,0.0,
         60.0,300.0,0.0
-    }
+    };
     glPushMatrix();
         glTranslatef(movement,0,0);
         glBegin(GL_POLYGON);
@@ -76,7 +77,7 @@ void sky(float color1, float color2, float color3) {
             0.0,1000.0,-1.0,
          1000.0,1000.0,-1.0,
          1000.0, 300.0,-1.0
-    }
+    };
     glPushMatrix();
         glBegin(GL_POLYGON);
             for (int i=0; i<4; i++) {
@@ -93,7 +94,7 @@ void road (void) {
             0.0, 300.0,-1.0,
          1000.0, 300.0,-1.0,
          1000.0,   0.0,-1.0
-    }
+    };
     glPushMatrix();
         glBegin(GL_POLYGON);
             for (int i=0; i<4; i++) {
@@ -114,7 +115,7 @@ void car(void) {
         600.0, 500.0, 1.0,
         900.0, 500.0, 1.0,
         900.0, 150.0, 1.0
-    }
+    };
     glPushMatrix();
         glBegin(GL_POLYGON);
             for (int i=0; i<8; i++) {
@@ -129,7 +130,7 @@ void tires(float rotation) {
     GLfloat centerTires[]= {
         300.0, 150.0, 2.0,
         600.0, 500.0, 2.0
-    }
+    };
     int triangleAmount = 20;
     GLfloat radius = 150.0;
     GLfloat twicePI = 2.0f * 3.14f;
@@ -139,9 +140,9 @@ void tires(float rotation) {
             glVertex3f(centerTires[0],centerTires[1],centerTires[2]);
             glColor3f(0.0,0.0,1.0);
             for (int i=0; i<triangleAmount; i++) {
-                glVertex3f(centerTires[0] + (radius * cos(i * twicePI / triangleAmount),
-                            centerTires[1] + (radius * sin(i * twicePI /triangleAmount),
-                            centerTires[2]));
+                glVertex3f(centerTires[0] + (radius * cos(i * twicePI / triangleAmount)),
+                            centerTires[1] + (radius * sin(i * twicePI /triangleAmount)),
+                            centerTires[2]);
                 glColor3f(1.0,0.0,1.0);
             }
         glEnd();
@@ -153,9 +154,9 @@ void tires(float rotation) {
             glVertex3f(centerTires[3],centerTires[4],centerTires[5]);
             glColor3f(0.0,0.0,1.0);
             for (int i=0; i<triangleAmount; i++) {
-                glVertex3f(centerTires[3] + (radius * cos(i * twicePI / triangleAmount),
-                            centerTires[4] + (radius * sin(i * twicePI /triangleAmount),
-                            centerTires[5]));
+                glVertex3f(centerTires[3] + (radius * cos(i * twicePI / triangleAmount)),
+                            centerTires[4] + (radius * sin(i * twicePI /triangleAmount)),
+                            centerTires[5]);
                 glColor3f(1.0,0.0,1.0);
             }
         glEnd();
