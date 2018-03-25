@@ -26,10 +26,11 @@ void render (void) {
 
     glLoadIdentity();
     //glRotatef(tick % 3600 * 0.1f, 0.0, 0.0, 1.0);
-    houses();
-    sky();
+    houses(tick % 3600 * -0.1f);
+    sky(tick % 3600 * 0.1f, tick % 3600 * 0.1f, tick % 3600 * 0.1f);
     road();
     car();
+    tires(tick % 3600 * 0.1f);
     /*glBegin(GL_TRIANGLES);
     glColor3f ( 1.0,1.0,0.0);
     glVertex3f(-0.2,0.2, -3.0);
@@ -47,7 +48,7 @@ void render (void) {
     glEnd();*/
 }
 
-void houses(void) {
+void houses(float movement) {
     GLfloat vertices1[]= {
          0.0,300.0,0.0,
          0.0,320.0,0.0,
@@ -59,7 +60,7 @@ void houses(void) {
         60.0,300.0,0.0
     }
     glPushMatrix();
-        glTranslatef(-1,0,0);
+        glTranslatef(movement,0,0);
         glBegin(GL_POLYGON);
             for (int i=0; i<8; i++) {
                 glVertex3f(vertices1[i*3],vertices1[(i*3)+1],vertices1[(i*3)+2]);
@@ -69,7 +70,7 @@ void houses(void) {
     glPopMatrix();
 }
 
-void sky(void) {
+void sky(float color1, float color2, float color3) {
     GLfloat vertices[]= {
             0.0, 300.0,-1.0,
             0.0,1000.0,-1.0,
@@ -80,7 +81,7 @@ void sky(void) {
         glBegin(GL_POLYGON);
             for (int i=0; i<4; i++) {
                 glVertex3f(vertices[i*3],vertices[(i*3)+1],vertices[(i*3)+2]);
-                glColor3f(0.0,0.0,1.0);
+                glColor3f(color1,color2,color3);
             }
         glEnd();
     glPopMatrix();
@@ -121,11 +122,10 @@ void car(void) {
                 glColor3f(0.0,1.0,0.0);
             }
         glEnd();
-        tires();
     glPopMatrix();
 }
 
-void tires(void) {
+void tires(float rotation) {
     GLfloat centerTires[]= {
         300.0, 150.0, 2.0,
         600.0, 500.0, 2.0
@@ -134,7 +134,7 @@ void tires(void) {
     GLfloat radius = 150.0;
     GLfloat twicePI = 2.0f * 3.14f;
     glPushMatrix();
-        glRotatef(20,centerTires[0],centerTires[1],centerTires[2]);
+        glRotatef(rotation,centerTires[0],centerTires[1],centerTires[2]);
         glBegin(GL_TRIANGLE_FAN);
             glVertex3f(centerTires[0],centerTires[1],centerTires[2]);
             glColor3f(0.0,0.0,1.0);
@@ -148,7 +148,7 @@ void tires(void) {
     glPopMatrix();
 
     glPushMatrix();
-        glRotatef(20,centerTires[3],centerTires[4],centerTires[5]);
+        glRotatef(rotation,centerTires[3],centerTires[4],centerTires[5]);
         glBegin(GL_TRIANGLE_FAN);
             glVertex3f(centerTires[3],centerTires[4],centerTires[5]);
             glColor3f(0.0,0.0,1.0);
