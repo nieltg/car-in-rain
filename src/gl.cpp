@@ -40,6 +40,15 @@ void render (void) {
     glColor3f ( 1.0,1.0,1.0);
     glVertex3f( -0.6,-0.6, -3.0);
     glEnd();
+    
+    glColor3f(0.3f,0.3f,0.3f);
+    
+    glBegin(GL_POLYGON);
+      glVertex3f(-1.0f,-1.0f,-3.0);
+      glVertex3f(1.0f,-1.0f,-3.0);
+      glVertex3f(1.0f,-0.5f,-3.0);
+      glVertex3f(-1.0f,-0.5f,-3.0);
+    glEnd();
 }
 
 void houses(void) {
