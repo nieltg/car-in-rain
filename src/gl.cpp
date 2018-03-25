@@ -23,7 +23,7 @@ void render (void) {
     unsigned int tick = SDL_GetTicks();
 
     glLoadIdentity();
-    glRotatef(tick % 3600 * 0.1f, 0.0, 0.0, 1.0);
+    //glRotatef(tick % 3600 * 0.1f, 0.0, 0.0, 1.0);
 
     glBegin(GL_TRIANGLES);
     glColor3f ( 1.0,1.0,0.0);
@@ -40,4 +40,25 @@ void render (void) {
     glColor3f ( 1.0,1.0,1.0);
     glVertex3f( -0.6,-0.6, -3.0);
     glEnd();
+}
+
+void houses(void) {
+    glBegin(GL_POLYGON);
+    glEnd();
+}
+
+void sky(void) {
+
+}
+
+void road (void) {
+
+}
+
+void car(void) {
+
+}
+
+void tires(void) {
+
 }
