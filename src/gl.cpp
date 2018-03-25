@@ -62,7 +62,7 @@ void houses(void) {
         glTranslatef(-1,0,0);
         glBegin(GL_POLYGON);
             for (int i=0; i<8; i++) {
-                glVertex3f(vertices1[i*3],vertices[(i*3)+1],vertices[(i*3)+2]);
+                glVertex3f(vertices1[i*3],vertices1[(i*3)+1],vertices1[(i*3)+2]);
                 glColor3f(1.0,1.0,0.0);
             }
         glEnd();
@@ -70,7 +70,7 @@ void houses(void) {
 }
 
 void sky(void) {
-    GLfloat vertices1[]= {
+    GLfloat vertices[]= {
             0.0, 300.0,-1.0,
             0.0,1000.0,-1.0,
          1000.0,1000.0,-1.0,
@@ -79,7 +79,7 @@ void sky(void) {
     glPushMatrix();
         glBegin(GL_POLYGON);
             for (int i=0; i<4; i++) {
-                glVertex3f(vertices1[i*3],vertices[(i*3)+1],vertices[(i*3)+2]);
+                glVertex3f(vertices[i*3],vertices[(i*3)+1],vertices[(i*3)+2]);
                 glColor3f(0.0,0.0,1.0);
             }
         glEnd();
@@ -87,7 +87,7 @@ void sky(void) {
 }
 
 void road (void) {
-    GLfloat vertices1[]= {
+    GLfloat vertices[]= {
             0.0,   0.0,-1.0,
             0.0, 300.0,-1.0,
          1000.0, 300.0,-1.0,
@@ -96,7 +96,7 @@ void road (void) {
     glPushMatrix();
         glBegin(GL_POLYGON);
             for (int i=0; i<4; i++) {
-                glVertex3f(vertices1[i*3],vertices[(i*3)+1],vertices[(i*3)+2]);
+                glVertex3f(vertices[i*3],vertices[(i*3)+1],vertices[(i*3)+2]);
                 glColor3f(0.5,0.5,0.5);
             }
         glEnd();
@@ -104,7 +104,7 @@ void road (void) {
 }
 
 void car(void) {
-    GLfloat vertices1[]= {
+    GLfloat vertices[]= {
         100.0, 150.0, 1.0,
         100.0, 500.0, 1.0,
         300.0, 500.0, 1.0,
@@ -112,12 +112,12 @@ void car(void) {
         600.0, 700.0, 1.0,
         600.0, 500.0, 1.0,
         900.0, 500.0, 1.0,
-        900.0, 150.0, 1.0,
+        900.0, 150.0, 1.0
     }
     glPushMatrix();
         glBegin(GL_POLYGON);
             for (int i=0; i<8; i++) {
-                glVertex3f(vertices1[i*3],vertices[(i*3)+1],vertices[(i*3)+2]);
+                glVertex3f(vertices[i*3],vertices[(i*3)+1],vertices[(i*3)+2]);
                 glColor3f(0.0,1.0,0.0);
             }
         glEnd();
@@ -126,5 +126,38 @@ void car(void) {
 }
 
 void tires(void) {
+    GLfloat centerTires[]= {
+        300.0, 150.0, 2.0,
+        600.0, 500.0, 2.0
+    }
+    int triangleAmount = 20;
+    GLfloat radius = 150.0;
+    GLfloat twicePI = 2.0f * 3.14f;
+    glPushMatrix();
+        glRotatef(20,centerTires[0],centerTires[1],centerTires[2]);
+        glBegin(GL_TRIANGLE_FAN);
+            glVertex3f(centerTires[0],centerTires[1],centerTires[2]);
+            glColor3f(0.0,0.0,1.0);
+            for (int i=0; i<triangleAmount; i++) {
+                glVertex3f(centerTires[0] + (radius * cos(i * twicePI / triangleAmount),
+                            centerTires[1] + (radius * sin(i * twicePI /triangleAmount),
+                            centerTires[2]));
+                glColor3f(1.0,0.0,1.0);
+            }
+        glEnd();
+    glPopMatrix();
 
+    glPushMatrix();
+        glRotatef(20,centerTires[3],centerTires[4],centerTires[5]);
+        glBegin(GL_TRIANGLE_FAN);
+            glVertex3f(centerTires[3],centerTires[4],centerTires[5]);
+            glColor3f(0.0,0.0,1.0);
+            for (int i=0; i<8; i++) {
+                glVertex3f(centerTires[3] + (radius * cos(i * twicePI / triangleAmount),
+                            centerTires[4] + (radius * sin(i * twicePI /triangleAmount),
+                            centerTires[5]));
+                glColor3f(1.0,0.0,1.0);
+            }
+        glEnd();
+    glPopMatrix();
 }

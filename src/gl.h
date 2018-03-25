@@ -7,4 +7,4 @@ void houses(void);
 void sky(void);
 void road (void);
 void car(void);
-void tires(void);
+void tire(GLfloat x, GLfloat y, GLfloat z);
