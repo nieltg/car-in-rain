@@ -152,7 +152,7 @@ void tires(float rotation) {
         glBegin(GL_TRIANGLE_FAN);
             glVertex3f(centerTires[3],centerTires[4],centerTires[5]);
             glColor3f(0.0,0.0,1.0);
-            for (int i=0; i<8; i++) {
+            for (int i=0; i<triangleAmount; i++) {
                 glVertex3f(centerTires[3] + (radius * cos(i * twicePI / triangleAmount),
                             centerTires[4] + (radius * sin(i * twicePI /triangleAmount),
                             centerTires[5]));
