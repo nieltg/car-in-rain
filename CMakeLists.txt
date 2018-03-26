@@ -3,17 +3,17 @@ project (ogl)
 
 set (CMAKE_CXX_STANDARD 11)
 
+# SDL2
+find_package (SDL2 REQUIRED)
 # OpenGL
 find_package (OpenGL REQUIRED)
-# SDL2pp
-add_subdirectory (lib/libSDL2pp)
 
 link_libraries (
-  ${OPENGL_LIBRARIES}
-  ${SDL2PP_LIBRARIES})
+  ${SDL2_LIBRARIES}
+  ${OPENGL_LIBRARIES})
 
 include_directories (
-  ${OPENGL_INCLUDE_DIRS}
-  ${SDL2PP_INCLUDE_DIRS})
+  ${SDL2_INCLUDE_DIRS}
+  ${OPENGL_INCLUDE_DIRS})
 
 add_subdirectory (src)

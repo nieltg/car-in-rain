@@ -1,59 +1,32 @@
 #include <SDL2/SDL.h>
-#include <SDL2pp/SDL2pp.hh>
 #include <iostream>
 #include <memory>
 
 #include "gl.h"
 
-int main (int argc, char** argv) try {
-  // Initialize SDL library
-  SDL2pp::SDL sdl(SDL_INIT_VIDEO);
 
-  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
-  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+// Utilities
 
-  // Create an application window with the following settings:
-  SDL2pp::Window window(
-    "OpenGL SDL2 Demo",       // Window title.
-    SDL_WINDOWPOS_UNDEFINED,  // Initial x position.
-    SDL_WINDOWPOS_UNDEFINED,  // Initial y position.
-    640,                      // Width, in pixels.
-    480,                      // Height, in pixels.
-    SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+void log_sdl_error(std::string _func, std::string _reason = SDL_GetError()) {
+  std::cerr << "Error in: " << _func << std::endl;
+  std::cerr << "  Reason: " << _reason << std::endl;
+}
 
-  // Create OpenGL context.
-  class GLContext {
-    SDL_GLContext context;
 
-  public:
-    GLContext (const SDL2pp::Window& _window) {
-      context = SDL_GL_CreateContext(_window.Get());
+// Main program
 
-      if (context == nullptr)
-        throw SDL2pp::Exception("SDL_GL_CreateContext");
-    }
+SDL_Window* window;
+SDL_GLContext context;
 
-    ~GLContext (void) {
-      SDL_GL_DeleteContext(context);
-    }
-  } context(window);
 
-  int status = SDL_GL_SetSwapInterval(1);
-  if (status < 0) {
-    std::cerr << "warning: Unable to use VSync: " << SDL_GetError()
-              << std::endl;
-  }
-
-  // Initialize program.
-  init();
-  resize(window.GetWidth(), window.GetHeight());
-
+void event_loop(void) {
   while (true) {
     SDL_Event event;
+
     while (SDL_PollEvent(&event)) {
       switch (event.type) {
         case SDL_QUIT:
-          return 0;
+          return;
 
         case SDL_WINDOWEVENT:
           switch (event.window.event) {
@@ -66,12 +39,61 @@ int main (int argc, char** argv) try {
     }
 
     render();
-    SDL_GL_SwapWindow(window.Get());
+    SDL_GL_SwapWindow(window);
+  }
+}
+
+
+int main(int argc, char** argv) {
+
+  // Initialize SDL library
+
+  if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+    log_sdl_error("SDL_Init");
+    return EXIT_FAILURE;
   }
 
-} catch (const SDL2pp::Exception& e) {
-  std::cerr << "Error in: " << e.GetSDLFunction() << std::endl;
-  std::cerr << "  Reason: " << e.GetSDLError() << std::endl;
-} catch (const std::exception& e) {
-  std::cerr << e.what() << std::endl;
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+
+  // Create an application window with the following settings:
+  window = SDL_CreateWindow(
+    "OpenGL SDL2 Demo",       // Window title.
+    SDL_WINDOWPOS_UNDEFINED,  // Initial x position.
+    SDL_WINDOWPOS_UNDEFINED,  // Initial y position.
+    640,                      // Width, in pixels.
+    480,                      // Height, in pixels.
+    SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+  if (window == nullptr) {
+    log_sdl_error("SDL_CreateWindow");
+    return EXIT_FAILURE;
+  }
+
+  // Initialize OpenGL context.
+
+  context = SDL_GL_CreateContext(window);
+  if (context == nullptr) {
+    log_sdl_error("SDL_GL_CreateContext");
+    return EXIT_FAILURE;
+  }
+
+  if (SDL_GL_SetSwapInterval(1) < 0) {
+    log_sdl_error("SDL_GL_SetSwapInterval");
+    std::cerr << "warning: Unable to use VSync. Performance will suffers."
+              << std::endl;
+  }
+
+  // Initialize program.
+
+  init();
+  resize(640, 480);
+
+  event_loop();
+
+  // Remove everything.
+
+  SDL_GL_DeleteContext(context);
+  SDL_DestroyWindow(window);
+
+  return EXIT_SUCCESS;
 }
