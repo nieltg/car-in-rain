@@ -5,7 +5,7 @@ from OpenGL.GL import (glClearColor,glClearDepth, glDepthFunc, glEnable, GL_LESS
     glShaderSource,glCompileShader,glAttachShader,glCreateShader, GL_FRAGMENT_SHADER, glShaderSource, glLinkProgram,
     glUseProgram,glBegin, GL_TRIANGLES, glColor3f, glVertex3f, glEnd, glEnableClientState,GL_VERTEX_ARRAY,GL_COLOR_ARRAY,
     glVertexPointer,GL_FLOAT, glColorPointer, glDrawElements, GL_UNSIGNED_INT, glDisableClientState, glGenBuffers, glBindBuffer,
-    GL_ARRAY_BUFFER, glBufferData, GL_STATIC_DRAW, GL_ELEMENT_ARRAY_BUFFER, ctypes)
+    GL_ARRAY_BUFFER, glBufferData, GL_STATIC_DRAW, GL_ELEMENT_ARRAY_BUFFER, ctypes, GL_TRIANGLE_FAN)
 from OpenGL.GLU import (gluPerspective, gluErrorString)
 from OpenGL.GLUT import (glutSwapBuffers, glutInit, glutInitDisplayMode, GLUT_RGBA, GLUT_DOUBLE, GLUT_DEPTH, glutInitWindowSize,
 glutDisplayFunc, glutIdleFunc, glutReshapeFunc, glutMainLoop, glutCreateWindow)
@@ -44,13 +44,15 @@ def draw():
     pitch+=0.27
     glTranslatef(0.0, 0.0, -2.0)
     glRotatef(yaw, 0, 1, 0)
-    glRotatef(pitch, 1, 0, 0)
+    # glRotatef(pitch, 0, 1, 0)
 
     # cube
     #draw_cube0()
     #draw_cube1()
     #draw_cube2()
-    draw_cube3()
+    #draw_cube3()
+    drawCar()
+    # drawTire()
 
     glFlush()
 
@@ -115,21 +117,53 @@ vertices=[
         -s,  s,  s,
         ]
 carVertices= [
-        100.0, 150.0, 100.0,
-        100.0, 500.0, 100.0,
-        300.0, 500.0, 100.0,
-        300.0, 700.0, 100.0,
-        600.0, 700.0, 100.0,
-        600.0, 500.0, 100.0,
-        900.0, 500.0, 100.0,
-        900.0, 150.0, 100.0
+        0.10, 0.15, 0.10,
+        0.10, 0.50, 0.10,
+        0.30, 0.50, 0.10,
+        0.30, 0.70, 0.10,
+        0.60, 0.70, 0.10,
+        0.60, 0.50, 0.10,
+        0.90, 0.50, 0.10,
+        0.90, 0.15, 0.10,
+        0.10, 0.15, -0.60,
+        0.10, 0.50, -0.60,
+        0.30, 0.50, -0.60,
+        0.30, 0.70, -0.60,
+        0.60, 0.70, -0.60,
+        0.60, 0.50, -0.60,
+        0.90, 0.50, -0.60,
+        0.90, 0.15, -0.60,
     ]
+
 tireVertices = [
-        300.0, 150.0, 50.0,
-        600.0, 150.0, 50.0,
-        300.0, 150.0, 700.0,
-        600.0, 150.0, 700.0
+        300.0/1000, 150.0/1000, 50.0/1000,
+        600.0/1000, 150.0/1000, 50.0/1000,
+        300.0/1000, 150.0/1000, 700.0/1000,
+        600.0/1000, 150.0/1000, 700.0/1000
     ]
+
+carColors=[
+        0, 0, 1,
+        0, 0, 1,
+        0, 0, 1,
+        0, 0, 1,
+        0, 0, 1,
+        0, 0, 1,
+        0, 0, 1,
+        0, 0, 1,
+        ]
+
+tireColors=[
+        1, 0, 1,
+        1, 0, 1,
+        1, 0, 1,
+        1, 0, 1,
+        1, 0, 1,
+        1, 0, 1,
+        1, 0, 1,
+        1, 0, 1,
+        ]
+
 colors=[
         0, 0, 0,
         1, 0, 0,
@@ -148,6 +182,119 @@ indices=[
         3, 7, 4, 4, 0, 3,
         4, 7, 6, 6, 5, 4,
         ]
+
+buffers=None
+def createCarVBO():
+    buffers = glGenBuffers(3)
+    glBindBuffer(GL_ARRAY_BUFFER, buffers[0])
+    glBufferData(GL_ARRAY_BUFFER, 
+            len(carVertices)*4,  # byte size
+            (ctypes.c_float*len(carVertices))(*carVertices), 
+            GL_STATIC_DRAW)
+    glBindBuffer(GL_ARRAY_BUFFER, buffers[1])
+    glBufferData(GL_ARRAY_BUFFER, 
+            len(carColors)*4, # byte size 
+            (ctypes.c_float*len(carColors))(*carColors), 
+            GL_STATIC_DRAW)
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers[2])
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 
+            len(indices)*4, # byte size
+            (ctypes.c_uint*len(indices))(*indices), 
+            GL_STATIC_DRAW)
+    return buffers
+
+def drawCarVBO():
+    glEnableClientState(GL_VERTEX_ARRAY)
+    glEnableClientState(GL_COLOR_ARRAY)
+    glBindBuffer(GL_ARRAY_BUFFER, buffers[0])
+    glVertexPointer(3, GL_FLOAT, 0, None)
+    glBindBuffer(GL_ARRAY_BUFFER, buffers[1])
+    glColorPointer(3, GL_FLOAT, 0, None)
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers[2])
+    glDrawElements(GL_TRIANGLE_FAN, len(indices), GL_UNSIGNED_INT, None)
+    glDisableClientState(GL_COLOR_ARRAY)
+    glDisableClientState(GL_VERTEX_ARRAY)
+
+shader=None
+def drawCar():
+    global shader, buffers
+    if shader==None:
+        shader=Shader()
+        shader.initShader('''
+void main()
+{
+    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
+    gl_FrontColor = gl_Color;
+}
+        ''',
+        '''
+void main()
+{
+    gl_FragColor = gl_Color;
+}
+        ''')
+        buffers=createCarVBO()
+
+    shader.begin()
+    drawCarVBO()
+    drawTire()
+    shader.end() 
+
+buffers=None
+def createTireVBO():
+    buffers = glGenBuffers(3)
+    glBindBuffer(GL_ARRAY_BUFFER, buffers[0])
+    glBufferData(GL_ARRAY_BUFFER, 
+            len(tireVertices)*4,  # byte size
+            (ctypes.c_float*len(tireVertices))(*tireVertices), 
+            GL_STATIC_DRAW)
+    glBindBuffer(GL_ARRAY_BUFFER, buffers[1])
+    glBufferData(GL_ARRAY_BUFFER, 
+            len(tireColors)*4, # byte size 
+            (ctypes.c_float*len(tireColors))(*tireColors), 
+            GL_STATIC_DRAW)
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers[2])
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 
+            len(indices)*4, # byte size
+            (ctypes.c_uint*len(indices))(*indices), 
+            GL_STATIC_DRAW)
+    return buffers
+
+def drawTireVBO():
+    glEnableClientState(GL_VERTEX_ARRAY)
+    glEnableClientState(GL_COLOR_ARRAY)
+    glBindBuffer(GL_ARRAY_BUFFER, buffers[0])
+    glVertexPointer(3, GL_FLOAT, 0, None)
+    glBindBuffer(GL_ARRAY_BUFFER, buffers[1])
+    glColorPointer(3, GL_FLOAT, 0, None)
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers[2])
+    glDrawElements(GL_TRIANGLE_FAN, len(indices), GL_UNSIGNED_INT, None)
+    glDisableClientState(GL_COLOR_ARRAY)
+    glDisableClientState(GL_VERTEX_ARRAY)
+
+shader=None
+def drawTire():
+    global shader, buffers
+    if shader==None:
+        shader=Shader()
+        shader.initShader('''
+void main()
+{
+    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
+    gl_FrontColor = gl_Color;
+}
+        ''',
+        '''
+void main()
+{
+    gl_FragColor = gl_Color;
+}
+        ''')
+        buffers=createTireVBO()
+
+    shader.begin()
+    drawTireVBO()
+    shader.end() 
 
 def draw_cube0():
     glBegin(GL_TRIANGLES)
