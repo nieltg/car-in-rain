@@ -1,7 +1,14 @@
 # coding: utf-8
-from OpenGL.GL import *
-from OpenGL.GLU import *
-from OpenGL.GLUT import *
+from OpenGL.GL import (glClearColor,glClearDepth, glDepthFunc, glEnable, GL_LESS, GL_DEPTH_TEST, glViewport,
+    glMatrixMode,glLoadIdentity,GL_PROJECTION,glClear,GL_COLOR_BUFFER_BIT,GL_DEPTH_BUFFER_BIT, GL_MODELVIEW,
+    glTranslatef, glRotatef,glFlush,glGetError,GL_NO_ERROR,glCreateProgram,glCreateShader,GL_VERTEX_SHADER,
+    glShaderSource,glCompileShader,glAttachShader,glCreateShader, GL_FRAGMENT_SHADER, glShaderSource, glLinkProgram,
+    glUseProgram,glBegin, GL_TRIANGLES, glColor3f, glVertex3f, glEnd, glEnableClientState,GL_VERTEX_ARRAY,GL_COLOR_ARRAY,
+    glVertexPointer,GL_FLOAT, glColorPointer, glDrawElements, GL_UNSIGNED_INT, glDisableClientState, glGenBuffers, glBindBuffer,
+    GL_ARRAY_BUFFER, glBufferData, GL_STATIC_DRAW, GL_ELEMENT_ARRAY_BUFFER, ctypes)
+from OpenGL.GLU import (gluPerspective, gluErrorString)
+from OpenGL.GLUT import (glutSwapBuffers, glutInit, glutInitDisplayMode, GLUT_RGBA, GLUT_DOUBLE, GLUT_DEPTH, glutInitWindowSize,
+glutDisplayFunc, glutIdleFunc, glutReshapeFunc, glutMainLoop, glutCreateWindow)
 import sys
 
 ##############################################################################
@@ -107,6 +114,22 @@ vertices=[
          s,  s,  s,
         -s,  s,  s,
         ]
+carVertices= [
+        100.0, 150.0, 100.0,
+        100.0, 500.0, 100.0,
+        300.0, 500.0, 100.0,
+        300.0, 700.0, 100.0,
+        600.0, 700.0, 100.0,
+        600.0, 500.0, 100.0,
+        900.0, 500.0, 100.0,
+        900.0, 150.0, 100.0
+    ]
+tireVertices = [
+        300.0, 150.0, 50.0,
+        600.0, 150.0, 50.0,
+        300.0, 150.0, 700.0,
+        600.0, 150.0, 700.0
+    ]
 colors=[
         0, 0, 0,
         1, 0, 0,
@@ -143,13 +166,13 @@ def draw_cube0():
     glEnd()
 
 def draw_cube1():
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glEnableClientState(GL_COLOR_ARRAY);
-    glVertexPointer(3, GL_FLOAT, 0, vertices);
+    glEnableClientState(GL_VERTEX_ARRAY)
+    glEnableClientState(GL_COLOR_ARRAY)
+    glVertexPointer(3, GL_FLOAT, 0, vertices)
     glColorPointer(3, GL_FLOAT, 0, colors)
-    glDrawElements(GL_TRIANGLES, len(indices), GL_UNSIGNED_INT, indices);
+    glDrawElements(GL_TRIANGLES, len(indices), GL_UNSIGNED_INT, indices)
     glDisableClientState(GL_COLOR_ARRAY)
-    glDisableClientState(GL_VERTEX_ARRAY);
+    glDisableClientState(GL_VERTEX_ARRAY)
 
 buffers=None
 def create_vbo():
@@ -172,16 +195,16 @@ def create_vbo():
     return buffers
 
 def draw_vbo():
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glEnableClientState(GL_COLOR_ARRAY);
-    glBindBuffer(GL_ARRAY_BUFFER, buffers[0]);
-    glVertexPointer(3, GL_FLOAT, 0, None);
-    glBindBuffer(GL_ARRAY_BUFFER, buffers[1]);
-    glColorPointer(3, GL_FLOAT, 0, None);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers[2]);
-    glDrawElements(GL_TRIANGLES, len(indices), GL_UNSIGNED_INT, None);
+    glEnableClientState(GL_VERTEX_ARRAY)
+    glEnableClientState(GL_COLOR_ARRAY)
+    glBindBuffer(GL_ARRAY_BUFFER, buffers[0])
+    glVertexPointer(3, GL_FLOAT, 0, None)
+    glBindBuffer(GL_ARRAY_BUFFER, buffers[1])
+    glColorPointer(3, GL_FLOAT, 0, None)
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers[2])
+    glDrawElements(GL_TRIANGLES, len(indices), GL_UNSIGNED_INT, None)
     glDisableClientState(GL_COLOR_ARRAY)
-    glDisableClientState(GL_VERTEX_ARRAY);
+    glDisableClientState(GL_VERTEX_ARRAY)
 
 def draw_cube2():
     global buffers
