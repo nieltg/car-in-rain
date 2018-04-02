@@ -1,14 +1,16 @@
 # coding: utf-8
+import pygame
 from OpenGL.GL import (glClearColor,glClearDepth, glDepthFunc, glEnable, GL_LESS, GL_DEPTH_TEST, glViewport,
     glMatrixMode,glLoadIdentity,GL_PROJECTION,glClear,GL_COLOR_BUFFER_BIT,GL_DEPTH_BUFFER_BIT, GL_MODELVIEW,
     glTranslatef, glRotatef,glFlush,glGetError,GL_NO_ERROR,glCreateProgram,glCreateShader,GL_VERTEX_SHADER,
     glShaderSource,glCompileShader,glAttachShader,glCreateShader, GL_FRAGMENT_SHADER, glShaderSource, glLinkProgram,
     glUseProgram,glBegin, GL_TRIANGLES, glColor3f, glVertex3f, glEnd, glEnableClientState,GL_VERTEX_ARRAY,GL_COLOR_ARRAY,
     glVertexPointer,GL_FLOAT, glColorPointer, glDrawElements, GL_UNSIGNED_INT, glDisableClientState, glGenBuffers, glBindBuffer,
-    GL_ARRAY_BUFFER, glBufferData, GL_STATIC_DRAW, GL_ELEMENT_ARRAY_BUFFER, ctypes, GL_TRIANGLE_FAN)
+    GL_ARRAY_BUFFER, glBufferData, GL_STATIC_DRAW, GL_ELEMENT_ARRAY_BUFFER, ctypes, GL_TRIANGLE_FAN, glDrawArrays)
 from OpenGL.GLU import (gluPerspective, gluErrorString)
 from OpenGL.GLUT import (glutSwapBuffers, glutInit, glutInitDisplayMode, GLUT_RGBA, GLUT_DOUBLE, GLUT_DEPTH, glutInitWindowSize,
 glutDisplayFunc, glutIdleFunc, glutReshapeFunc, glutMainLoop, glutCreateWindow)
+from pygame.locals import *
 import sys
 
 ##############################################################################
@@ -40,17 +42,17 @@ def draw():
     # view
     glMatrixMode(GL_MODELVIEW)
     glLoadIdentity()
-    yaw+=0.39
+    yaw+=0.01
     pitch+=0.27
     glTranslatef(0.0, 0.0, -2.0)
-    glRotatef(yaw, 0, 1, 0)
-    # glRotatef(pitch, 0, 1, 0)
+    glRotatef(yaw, 1, 1, 1)
+    # glRotatef(pitch, 0, 0, 1)
 
     # cube
     #draw_cube0()
     #draw_cube1()
     #draw_cube2()
-    #draw_cube3()
+    # draw_cube3()
     drawCar()
     # drawTire()
 
@@ -116,6 +118,7 @@ vertices=[
          s,  s,  s,
         -s,  s,  s,
         ]
+
 carVertices= [
         0.10, 0.15, 0.10,
         0.10, 0.50, 0.10,
@@ -132,25 +135,33 @@ carVertices= [
         0.60, 0.70, -0.60,
         0.60, 0.50, -0.60,
         0.90, 0.50, -0.60,
-        0.90, 0.15, -0.60,
+        0.90, 0.15, -0.60
     ]
 
 tireVertices = [
-        300.0/1000, 150.0/1000, 50.0/1000,
-        600.0/1000, 150.0/1000, 50.0/1000,
-        300.0/1000, 150.0/1000, 700.0/1000,
-        600.0/1000, 150.0/1000, 700.0/1000
+        0.30, 0.15, 0.05,
+        0.60, 0.15, 0.05,
+        0.30, 0.15, 0.70,
+        0.60, 0.15, 0.70
     ]
 
 carColors=[
-        0, 0, 1,
-        0, 0, 1,
-        0, 0, 1,
-        0, 0, 1,
-        0, 0, 1,
-        0, 0, 1,
-        0, 0, 1,
-        0, 0, 1,
+        1, 0, 1,
+        0, 1, 1,
+        1, 0, 1,
+        0, 1, 1,
+        1, 0, 1,
+        0, 1, 1,
+        1, 0, 1,
+        0, 1, 1,
+        1, 0, 1,
+        0, 1, 1,
+        1, 0, 1,
+        0, 1, 1,
+        1, 0, 1,
+        0, 1, 1,
+        1, 0, 1,
+        0, 1, 1,
         ]
 
 tireColors=[
@@ -174,6 +185,19 @@ colors=[
         1, 1, 1,
         1, 1, 0,
         ]
+
+carIndices=[
+         0, 1, 6,  2, 3, 4,  4, 5, 2,  6, 7, 0,
+         8, 9,14, 14,15, 8, 10,11,12, 12,13,10, 
+         0, 1, 9,  9, 8, 0,
+         7, 6,14, 14,15, 7,
+         0, 8,15, 15, 7, 0,
+         1, 2,10, 10, 9, 1,
+         5, 6,14, 14,13, 5,
+         2, 3,11, 11,10, 2,
+         5, 4,12, 12,13, 5,
+         3, 4,12, 12,11, 3
+    ]
 indices=[
         0, 1, 2, 2, 3, 0,
         0, 4, 5, 5, 1, 0,
@@ -182,6 +206,7 @@ indices=[
         3, 7, 4, 4, 0, 3,
         4, 7, 6, 6, 5, 4,
         ]
+
 
 buffers=None
 def createCarVBO():
@@ -198,8 +223,8 @@ def createCarVBO():
             GL_STATIC_DRAW)
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers[2])
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, 
-            len(indices)*4, # byte size
-            (ctypes.c_uint*len(indices))(*indices), 
+            len(carIndices)*4, # byte size
+            (ctypes.c_uint*len(carIndices))(*carIndices), 
             GL_STATIC_DRAW)
     return buffers
 
@@ -211,33 +236,35 @@ def drawCarVBO():
     glBindBuffer(GL_ARRAY_BUFFER, buffers[1])
     glColorPointer(3, GL_FLOAT, 0, None)
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers[2])
-    glDrawElements(GL_TRIANGLE_FAN, len(indices), GL_UNSIGNED_INT, None)
+    #glDrawArrays(GL_TRIANGLE_FAN, 0,200)
+    glDrawElements(GL_TRIANGLE_FAN, len(carIndices), GL_UNSIGNED_INT, None)
     glDisableClientState(GL_COLOR_ARRAY)
     glDisableClientState(GL_VERTEX_ARRAY)
 
 shader=None
 def drawCar():
     global shader, buffers
+    # drawTire()
     if shader==None:
         shader=Shader()
         shader.initShader('''
-void main()
-{
-    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
-    gl_FrontColor = gl_Color;
-}
-        ''',
-        '''
-void main()
-{
-    gl_FragColor = gl_Color;
-}
+            void main()
+            {
+                gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
+                gl_FrontColor = gl_Color;
+            }
+                    ''',
+                    '''
+            void main()
+            {
+                gl_FragColor = gl_Color;
+            }
         ''')
+        
         buffers=createCarVBO()
 
     shader.begin()
     drawCarVBO()
-    drawTire()
     shader.end() 
 
 buffers=None
@@ -278,17 +305,17 @@ def drawTire():
     if shader==None:
         shader=Shader()
         shader.initShader('''
-void main()
-{
-    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
-    gl_FrontColor = gl_Color;
-}
-        ''',
-        '''
-void main()
-{
-    gl_FragColor = gl_Color;
-}
+            void main()
+            {
+                gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
+                gl_FrontColor = gl_Color;
+            }
+                    ''',
+                    '''
+            void main()
+            {
+                gl_FragColor = gl_Color;
+            }
         ''')
         buffers=createTireVBO()
 
@@ -391,6 +418,7 @@ def disp_func():
     draw()
     glutSwapBuffers()
 
+# __main__ :
 if __name__=="__main__":
     glutInit(sys.argv)
     glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH)

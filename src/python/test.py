@@ -1,7 +1,10 @@
 import sys
-from OpenGL.GL import glClear, GL_COLOR_BUFFER_BIT, GL_DEPTH_BUFFER_BIT
+from OpenGL.GL import (
+    glClear, GL_COLOR_BUFFER_BIT, GL_DEPTH_BUFFER_BIT)
 # from OpenGL.GLU import *
-from OpenGL.GLUT import glutSwapBuffers, glutInit, glutInitDisplayMode, glutCreateWindow, glutDisplayFunc, glutMainLoop, GLUT_RGBA, GLUT_DOUBLE, GLUT_DEPTH
+from OpenGL.GLUT import (
+    glutSwapBuffers, glutInit, glutInitDisplayMode, glutCreateWindow, glutDisplayFunc, 
+    glutMainLoop, GLUT_RGBA, GLUT_DOUBLE, GLUT_DEPTH)
 
 # The display() method does all the work; it has to call the appropriate
 # OpenGL functions to actually display something.
@@ -11,6 +14,7 @@ def display():
 
     # ... render stuff in here ...
     # It will go to an off-screen frame buffer.
+    
 
     # Copy the off-screen buffer to the screen.
     glutSwapBuffers()
