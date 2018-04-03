@@ -54,7 +54,7 @@ def draw():
     #draw_cube2()
     # draw_cube3()
     drawCar()
-    # drawTire()
+    drawTire()
 
     glFlush()
 
@@ -198,6 +198,7 @@ carIndices=[
          5, 4,12, 12,13, 5,
          3, 4,12, 12,11, 3
     ]
+    
 indices=[
         0, 1, 2, 2, 3, 0,
         0, 4, 5, 5, 1, 0,
