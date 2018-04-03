@@ -566,7 +566,7 @@ void draw() {
 
   main_object.draw();
   ground.draw();
-  light_bbox.draw_bbox();
+  //light_bbox.draw_bbox();
 }
 
 void onDisplay()
