@@ -622,7 +622,7 @@ int main(int argc, char* argv[]) {
     return 1;
   }
 
-  char* obj_filename = (char*) "suzanne.obj";
+  char* obj_filename = (char*) "carTexture3.obj";
   char* v_shader_filename = (char*) "phong-shading.v.glsl";
   char* f_shader_filename = (char*) "phong-shading.f.glsl";
   if (argc != 4) {
