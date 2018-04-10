@@ -4,5 +4,5 @@ add_executable (
 
   # Sources
   common/shader_utils.cpp
-  obj-viewer.cpp
+  cube.cpp
 )
