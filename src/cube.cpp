@@ -30,6 +30,27 @@ GLuint texture_id;
 GLint attribute_coord3d, attribute_texcoord;
 GLint uniform_mvp, uniform_mytexture;
 
+/*mat4 model;
+vec3 cameraPosition;
+
+// material settings
+sampler2D materialTex;
+float materialShininess;
+vec3 materialSpecularColor;
+
+struct Light {
+   vec3 position;
+   vec3 intensities; //a.k.a the color of the light
+   float attenuation;
+   float ambientCoefficient;
+} light;
+
+in vec2 fragTexCoord;
+in vec3 fragNormal;
+in vec3 fragVert;
+
+out vec4 finalColor;*/
+
 bool init_resources() {
 	GLfloat cube_vertices[] = {
 		// front
@@ -341,8 +362,55 @@ int main(int argc, char* argv[]) {
 
     glEnable(GL_BLEND);
     glEnable(GL_DEPTH_TEST);
+	
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+	glEnable(GL_LIGHTING);
+	//glColorMaterial ( GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE  ) ;
+	//glEnable ( GL_COLOR_MATERIAL ) ;
+
+	GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+   	GLfloat mat_shininess[] = { 50.0 };
+   	GLfloat light_position[] = { 1.0, 1.0, 1.0, 0.0 };
+	
+	glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+   	glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+   	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+
+   	glEnable(GL_LIGHTING);
+   	glEnable(GL_LIGHT0);
+   	glEnable(GL_DEPTH_TEST);
+
+	/*vec3 normal = normalize(transpose(inverse(mat3(model))) * fragNormal);
+    vec3 surfacePos = vec3(model * vec4(fragVert, 1));
+    vec4 surfaceColor = texture(materialTex, fragTexCoord);
+    vec3 surfaceToLight = normalize(light.position - surfacePos);
+    vec3 surfaceToCamera = normalize(cameraPosition - surfacePos);
+    
+    //ambient
+    vec3 ambient = light.ambientCoefficient * glClampColor.rgb * light.intensities;
+
+    //diffuse
+    float diffuseCoefficient = max(0.0, dot(normal, surfaceToLight));
+    vec3 diffuse = diffuseCoefficient * glClampColor.rgb * light.intensities;
+    
+    //specular
+    float specularCoefficient = 0.0;
+    if(diffuseCoefficient > 0.0)
+        specularCoefficient = pow(max(0.0, dot(surfaceToCamera, reflect(-surfaceToLight, normal))), materialShininess);
+    vec3 specular = specularCoefficient * materialSpecularColor * light.intensities;
+    
+    //attenuation
+    float distanceToLight = length(light.position - surfacePos);
+    float attenuation = 1.0 / (1.0 + light.attenuation * pow(distanceToLight, 2));
+
+    //linear color (color before gamma correction)
+    vec3 linearColor = ambient + attenuation*(diffuse + specular);
+    
+    //final color (after gamma correction)
+    vec3 gamma = vec3(1.0/2.2);
+    finalColor = vec4(pow(linearColor, tgamma), glClampColor.a);
+*/
     mainLoop(window);
 
 	free_resources();
