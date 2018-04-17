@@ -3,6 +3,9 @@
  * This file is in the public domain.
  * Contributors: Sylvain Beucler
  */
+#include <thread>
+#include "slider.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -606,6 +609,8 @@ void free_resources()
 
 
 int main(int argc, char* argv[]) {
+  std::thread thrd(run_slider);
+
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_RGBA|GLUT_ALPHA|GLUT_DOUBLE|GLUT_DEPTH|GLUT_MULTISAMPLE);
   glutInitWindowSize(screen_width, screen_height);
