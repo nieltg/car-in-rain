@@ -3,6 +3,8 @@
  * This file is in the public domain.
  * Contributors: Sylvain Beucler
  */
+#include <thread>
+#include "slider.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -44,6 +46,7 @@ int last_ticks = 0;
 
 static unsigned int fps_start = glutGet(GLUT_ELAPSED_TIME);
 static unsigned int fps_frames = 0;
+GLuint vs, fs;
 
 class Mesh {
 private:
@@ -227,7 +230,6 @@ public:
 };
 Mesh ground, main_object, light_bbox;
 
-
 void load_obj(const char* filename, Mesh* mesh) {
   ifstream in(filename, ios::in);
   if (!in) { cerr << "Cannot open " << filename << endl; exit(1); }
@@ -315,10 +317,9 @@ int init_resources(char* model_filename, char* vshader_filename, char* fshader_f
   GLint link_ok = GL_FALSE;
   GLint validate_ok = GL_FALSE;
 
-  GLuint vs, fs;
   if ((vs = create_shader(vshader_filename, GL_VERTEX_SHADER))   == 0) return 0;
   if ((fs = create_shader(fshader_filename, GL_FRAGMENT_SHADER)) == 0) return 0;
-
+  
   program = glCreateProgram();
   glAttachShader(program, vs);
   glAttachShader(program, fs);
@@ -560,12 +561,13 @@ void logic() {
 
 void draw() {
   glClearColor(0.45, 0.45, 0.45, 1.0);
+  //setLight();
   glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
   glUseProgram(program);
 
   main_object.draw();
-  ground.draw();
+  //ground.draw();
   //light_bbox.draw_bbox();
 }
 
@@ -606,6 +608,8 @@ void free_resources()
 
 
 int main(int argc, char* argv[]) {
+  std::thread thrd(run_slider);
+
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_RGBA|GLUT_ALPHA|GLUT_DOUBLE|GLUT_DEPTH|GLUT_MULTISAMPLE);
   glutInitWindowSize(screen_width, screen_height);
@@ -622,7 +626,7 @@ int main(int argc, char* argv[]) {
     return 1;
   }
 
-  char* obj_filename = (char*) "suzanne.obj";
+  char* obj_filename = (char*) "car2-subdiv4.obj";
   char* v_shader_filename = (char*) "phong-shading.v.glsl";
   char* f_shader_filename = (char*) "phong-shading.f.glsl";
   if (argc != 4) {
