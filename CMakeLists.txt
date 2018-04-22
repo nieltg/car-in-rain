@@ -18,6 +18,7 @@ link_libraries (
   ${GLEW_LIBRARIES}
   ${GLM_LIBRARIES}
   ${GTK3_LIBRARIES}
+  -lpthread
 )
 
 link_directories (
