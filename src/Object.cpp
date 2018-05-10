@@ -87,3 +87,28 @@ std::vector<std::vector<glm::vec2>> Object::getVertexTexCoors()
     }
 }
 
+std::vector<std::vector<glm::vec3>> Object::getIndices()
+{
+    if (!loaded)
+        std::cerr << "Call  after .obj is loaded" << std::endl;
+    else
+    {
+        //Load all meshes here
+        std::vector<std::vector<glm::vec3>> Indices;
+        for (int i = 0; i < loader.LoadedMeshes.size(); i++)
+        {
+            //Load vertices per mesh
+            std::vector<glm::vec3> currentIndices;
+            objl::Mesh currentMesh = loader.LoadedMeshes[i];
+            for (int j = 0; j < currentMesh.Vertices.size(); j+=3)
+            {
+                glm::vec3 currentIndice(currentMesh.Indices[j],
+                    currentMesh.Indices[j+1],
+                    currentMesh.Indices[j+2]);
+                currentIndices.push_back(currentIndice);
+            }
+            Indices.push_back(currentIndices);    
+        }
+        return Indices; 
+    }
+}

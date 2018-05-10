@@ -15,4 +15,5 @@ class Object
         std::vector<std::vector<glm::vec3>> getVertexPositions();
         std::vector<std::vector<glm::vec3>> getVertexNormals();
         std::vector<std::vector<glm::vec2>> getVertexTexCoors();
+        std::vector<std::vector<glm::vec3>> getIndices();
 };
