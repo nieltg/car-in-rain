@@ -6,9 +6,12 @@
 class Texture {
 	private :
 		GLuint texture_id;
+		GLint uniform_mytexture;
 
 	public :
 		Texture();
 		~Texture();
+		bool linkProgram(GLuint program);
 		bool load(const char* path);
+		void render();
 };
