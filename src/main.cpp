@@ -5,7 +5,7 @@
 
 // Utilities
 
-void log_sdl_error(std::string _func, std::string _reason = SDL_GetError()) {
+void log_func_error(std::string _func, std::string _reason) {
   std::cerr << "Error in: " << _func << std::endl;
   std::cerr << "  Reason: " << _reason << std::endl;
 }
@@ -47,12 +47,9 @@ int main(int argc, char** argv) {
   // Initialize SDL library
 
   if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-    log_sdl_error("SDL_Init");
+    log_func_error("SDL_Init", SDL_GetError());
     return EXIT_FAILURE;
   }
-
-  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
-  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
 
   // Create an application window with the following settings:
   window = SDL_CreateWindow(
@@ -63,20 +60,23 @@ int main(int argc, char** argv) {
     480,                      // Height, in pixels.
     SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
   if (window == nullptr) {
-    log_sdl_error("SDL_CreateWindow");
+    log_func_error("SDL_CreateWindow", SDL_GetError());
     return EXIT_FAILURE;
   }
 
   // Initialize OpenGL context.
 
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+
   context = SDL_GL_CreateContext(window);
   if (context == nullptr) {
-    log_sdl_error("SDL_GL_CreateContext");
+    log_func_error("SDL_GL_CreateContext", SDL_GetError());
     return EXIT_FAILURE;
   }
 
   if (SDL_GL_SetSwapInterval(1) < 0) {
-    log_sdl_error("SDL_GL_SetSwapInterval");
+    log_func_error("SDL_GL_SetSwapInterval", SDL_GetError());
     std::cerr << "warning: Unable to use VSync. Performance will suffers."
               << std::endl;
   }
