@@ -12,7 +12,7 @@ public:
   Token add (uint32_t _event_type, Hook _hook);
   void remove (Token _delete_token);
 
-  class QuitException : std::exception {
+  class QuitException : public std::exception {
   };
 
   void run (void) const;
