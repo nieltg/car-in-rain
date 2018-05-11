@@ -16,4 +16,5 @@ class Buffer {
 		void setBufferData(GLfloat object_data[]);
 		void setBufferData(GLushort object_data[]);
 		void render();
+		void renderClean();
 };

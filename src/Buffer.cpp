@@ -64,12 +64,18 @@ void Buffer::render() {
 			0,                  // no extra data between each position
 			0                   // offset of first element
 		);
-		glDisableVertexAttribArray(attribute_coord);
 	} else {
 		int size;
 		/* Push each element in buffer_vertices to the vertex shader */
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo_data);
 		glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &size);
 		glDrawElements(GL_TRIANGLES, size/sizeof(GLushort), GL_UNSIGNED_SHORT, 0);
+	}
+}
+
+//Call this function after render in each loop
+void Buffer::renderClean() {
+	if (attribute_name != "elements") {
+		glDisableVertexAttribArray(attribute_coord);
 	}
 }
