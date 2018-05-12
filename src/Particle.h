@@ -9,13 +9,13 @@
 
 class Particle {
 	private :
-		glm::vec3 position;
+		glm::vec3 positions;
 		glm::vec3 speed;
 		unsigned char r;
 		unsigned char g;
 		unsigned char b;
 		unsigned char a;
-		float size;
+		float sizes;
 		float angle;
 		float weight;
 		float life; // Remaining life of the particle. if < 0 : dead and unused.
@@ -39,6 +39,7 @@ class Particle {
 		bool isAlive();
 		bool isDead();
 		bool operator<(Particle& that);
+		void revive(float lifeInput, glm::vec3 startPosition, glm::vec3 maindir, float spread);
 		void setLife(float inputLife);
 		void setPosition(glm::vec3 inputPosition);
 		void setSpeed(glm::vec3 inputSpeed);
@@ -50,5 +51,5 @@ class Particle {
 		void setAngle(float inputAngle);
 		void setWeight(float inputWeight);
 		void setCameraDistance(float inputDistance);
-		void simulateGravity();
+		void simulateGravity(double deltaTime, glm::vec3 cameraPosition);
 };

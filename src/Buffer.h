@@ -10,15 +10,18 @@ class Buffer {
 		GLint attribute_coord;
 		
 	public :
+		Buffer();
 		Buffer(const char* inputName);
 		~Buffer();
 		void draw();
 		void draw(int rendered_count);
 		bool linkProgram(GLuint program);
+		Buffer& operator=(const Buffer& other);
 		void render();
 		void render(GLfloat object_data[], int rendered_count, int max_count);
 		void render(GLubyte object_data[], int rendered_count, int max_count);
 		void renderClean();
+		void setAttributeName(const char* inputName);
 		void setBufferData(GLfloat object_data[]);
 		void setBufferData(GLushort object_data[]);
 		void setBufferData(int max_count);

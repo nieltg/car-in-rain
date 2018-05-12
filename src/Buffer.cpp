@@ -4,6 +4,10 @@
 //vbo_cube vertices, vbo_cube_texcoords, ibo_cube_elements, particles_position, particles_color, particles_coord3d
 //attribute_name coord3d, texcoord, elements, particles_position, particles_color, particles_coord3d
 
+Buffer::Buffer() {
+	glGenBuffers(1, &vbo_data);
+}
+
 /**	Call this function on each attribute_name of buffer
  *	supported attribute_name :
  *		coord3d				: 
@@ -60,6 +64,11 @@ bool Buffer::linkProgram(GLuint program) {
 			return (true);
 		}
 	}
+}
+
+Buffer& Buffer::operator=(const Buffer& other) {
+	attribute_name = other.attribute_name;
+	vbo_data = other.vbo_data;
 }
 
 /** Call this function for coord3d, texcoord, elements and particles_coord3d
@@ -154,6 +163,10 @@ void Buffer::renderClean() {
 	if (attribute_name != "elements") {
 		glDisableVertexAttribArray(attribute_coord);
 	}
+}
+
+void Buffer::setAttributeName(const char* inputName) {
+	attribute_name = inputName;
 }
 
 /** Call this function on each attribute_name of buffer except elements
