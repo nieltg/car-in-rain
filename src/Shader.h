@@ -9,9 +9,9 @@
 class Shader
 {
     private:
-        GLuint shader;
         std::string shaderCode;
     public:
+        GLuint shader;
         Shader(GLenum _type);
         void Source(const char* shaderPath);
         void Compile();
