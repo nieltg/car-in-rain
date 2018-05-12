@@ -1,13 +1,14 @@
-#include "shader.h"
+#include "Shader.h"
 
-#include <glad/glad.h>
+#include <GL/glew.h>
 #include <glm/glm.hpp>
 
 class Program
 {
     public:
-        GLUint ProgramID;
+        GLuint ProgramID;
         Program();
+        ~Program();
         void Attach(Shader s);
         void Link();
-}
+};

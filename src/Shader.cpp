@@ -2,7 +2,7 @@
 
 Shader::Shader(GLenum _type)
 {
-    shader = glCreateShader(type);
+    shader = glCreateShader(_type);
 }
 
 Shader::~Shader()
@@ -22,14 +22,15 @@ void Shader::Source(const char* shaderPath)
         shaderFile.close();
         shaderCode = shaderStream.str();
     }
-    catch
+    catch(std::ifstream::failure e)
     {
         std::cerr << "Shader file not read succesfully" << std::endl;
     }
-    glShaderSource(shader, 1, &shaderCode, NULL);
+    const GLchar* glFormatString = shaderCode.c_str();
+    glShaderSource(shader, 1, &glFormatString, NULL);
 }
 
-void Compile()
+void Shader::Compile()
 {
     glCompileShader(shader);
     GLint success;

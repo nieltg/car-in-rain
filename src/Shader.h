@@ -1,4 +1,4 @@
-#include <glad/glad.h>
+#include <GL/glew.h>
 #include <glm/glm.hpp>
 
 #include <string>
@@ -13,6 +13,7 @@ class Shader
     public:
         GLuint shader;
         Shader(GLenum _type);
+        ~Shader();
         void Source(const char* shaderPath);
         void Compile();
 };

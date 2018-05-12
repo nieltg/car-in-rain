@@ -1,4 +1,4 @@
-#include "buffer.h"
+#include "Buffer.h"
 #include <iostream>
 
 //vbo_cube vertices, vbo_cube_texcoords, ibo_cube_elements, particles_position, particles_color, particles_coord3d
