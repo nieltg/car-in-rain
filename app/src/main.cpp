@@ -8,6 +8,8 @@
 
 #include <globjects/globjects.h>
 
+#include "scene.h"
+
 
 // Utilities
 
@@ -66,8 +68,8 @@ int main(int argc, char** argv) {
 
   // Begin program.
 
-  int w, h;
-  SDL_GetWindowSize(window, &w, &h);
+  scene_init();
+  SDL_GetWindowSize(window, &scene_w, &scene_h);
 
   // Event loop.
 
@@ -85,15 +87,15 @@ int main(int argc, char** argv) {
         case SDL_WINDOWEVENT:
           switch (event.window.event) {
             case SDL_WINDOWEVENT_RESIZED:
-              w = event.window.data1;
-              h = event.window.data2;
+              scene_w = event.window.data1;
+              scene_h = event.window.data2;
               break;
           }
           break;
       }
     }
 
-    // TODO: Draw!
+    scene_draw();
     SDL_GL_SwapWindow(window);
   }
 
