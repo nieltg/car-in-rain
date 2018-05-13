@@ -3,6 +3,7 @@
 #include <memory>
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_Image.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -42,6 +43,8 @@ private:
   std::unique_ptr<globjects::Buffer> m_vertices;
   std::unique_ptr<globjects::Buffer> m_texcoord;
   std::unique_ptr<globjects::Buffer> m_indices;
+
+  std::unique_ptr<globjects::Texture> m_texture;
 
   gl::GLint attr_coord3d;
   gl::GLint attr_texcoord;

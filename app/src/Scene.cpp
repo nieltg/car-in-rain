@@ -21,12 +21,10 @@ const char* defaultFragmentShaderSource = R"(
 #version 140
 
 varying vec2 f_texcoord;
-// uniform sampler2D mytexture;
+uniform sampler2D mytexture;
 
 void main(void) {
-  vec2 flipped_texcoord = vec2(f_texcoord.x, 1.0 - f_texcoord.y);
-  // gl_FragColor = texture2D(mytexture, flipped_texcoord);
-  gl_FragColor = vec4(flipped_texcoord, 0.5, 1.0);
+  gl_FragColor = texture2D(mytexture, f_texcoord);
 }
 )";
 
@@ -150,7 +148,9 @@ Scene::Scene (void) {
   attr_coord3d = g_program->getAttributeLocation("coord3d");
   attr_texcoord = g_program->getAttributeLocation("texcoord");
   uniform_mvp = g_program->getUniformLocation("mvp");
-  // uniform_tex = g_program->getAttributeLocation("mytexture");
+  uniform_tex = g_program->getAttributeLocation("mytexture");
+
+  g_program->setUniform(uniform_tex, 0);
 
   // OBJ loader.
   std::vector<glm::vec3> vertices;
@@ -169,6 +169,8 @@ Scene::Scene (void) {
       vertices.push_back(glm::vec3(pos.X, pos.Y, pos.Z));
       const auto& tex = v.TextureCoordinate;
       texcoord.push_back(glm::vec2(tex.X, tex.Y));
+
+      std::cerr << "COORD " << tex.X << " " << tex.Y << std::endl;
     }
 
     indices = loader.LoadedIndices;
@@ -205,6 +207,29 @@ Scene::Scene (void) {
 
   m_vao->bindElementBuffer(m_indices.get());
 
+  // Texture.
+  {
+    auto res_texture = IMG_Load("mesh.png");
+
+    m_texture = globjects::Texture::create(gl::GL_TEXTURE_2D);
+    m_texture->setParameter(gl::GL_TEXTURE_MIN_FILTER, gl::GL_LINEAR);
+    m_texture->setParameter(gl::GL_TEXTURE_MAG_FILTER, gl::GL_LINEAR);
+    m_texture->setParameter(gl::GL_TEXTURE_WRAP_S, gl::GL_CLAMP_TO_EDGE);
+    m_texture->setParameter(gl::GL_TEXTURE_WRAP_T, gl::GL_CLAMP_TO_EDGE);
+
+    m_texture->image2D(
+      0,
+      gl::GL_RGBA,
+      glm::ivec2(res_texture->w, res_texture->h),
+      0,
+      gl::GL_RGBA,
+      gl::GL_UNSIGNED_BYTE,
+      res_texture->pixels);
+
+    SDL_FreeSurface(res_texture);
+  }
+
+  // OpenGL.
   gl::glEnable(gl::GL_BLEND);
   gl::glEnable(gl::GL_DEPTH_TEST);
   gl::glBlendFunc(gl::GL_SRC_ALPHA, gl::GL_ONE_MINUS_SRC_ALPHA);
@@ -237,8 +262,13 @@ void Scene::draw (void) {
 
   glm::mat4 mvp = projection * view * model * anim;
 
+  gl::glActiveTexture(gl::GL_TEXTURE0);
+  m_texture->bind();
+
   g_program->use();
   g_program->setUniform(uniform_mvp, mvp);
   m_vao->drawElements(gl::GL_TRIANGLES, indices_len, gl::GL_UNSIGNED_INT);
   g_program->release();
+
+  m_texture->unbind();
 }
