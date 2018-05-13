@@ -10,9 +10,10 @@ Buffer::Buffer() {
 
 /**	Call this function on each attribute_name of buffer
  *	supported attribute_name :
- *		coord3d				: 
- *		texcoord			: 
- *		elements			:
+ *		coord3d				: vertex positions
+ *		texcoord			: uvs, texture coordinates
+ *		elements			: indices
+ *      normals				: normal vectors
  *		particles_position	:
  *		particles_color		:
  *		particles_coord3d	:
@@ -41,11 +42,11 @@ void Buffer::draw() {
 }
 
 /** Call this procedure only once for one of these attribute_name :
- * 		particles_coord3d, particles_position, particles_color
+ * 		particles_coord3d, particles_position, particles_color, normals
  * 	Call this procedure after procedure render while on loop procedure
  **/
 void Buffer::draw(int rendered_count) {
-	if (attribute_name == "particles_coord3d" || attribute_name == "particles_position" || attribute_name == "particles_color") {
+	if (attribute_name == "particles_coord3d" || attribute_name == "particles_position" || attribute_name == "particles_color" || attribute_name == "normals") {
 		glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, rendered_count);
 	}
 }
@@ -71,15 +72,15 @@ Buffer& Buffer::operator=(const Buffer& other) {
 	vbo_data = other.vbo_data;
 }
 
-/** Call this function for coord3d, texcoord, elements and particles_coord3d
+/** Call this function for coord3d, texcoord, elements, normals and particles_coord3d
  *	Call this procedure while on loop procedure
  **/
 void Buffer::render() {
 	int numberOfElements;
-	if (attribute_name == "coord3d" || attribute_name == "texcoord") {
+	if (attribute_name == "coord3d" || attribute_name == "texcoord" || attribute_name == "normals") {
 		glEnableVertexAttribArray(attribute_coord);
 		glBindBuffer(GL_ARRAY_BUFFER, vbo_data);
-		if (attribute_name == "coord3d") {
+		if (attribute_name == "coord3d" || attribute_name == "normals") {
 			numberOfElements = 3;
 		} else if (attribute_name == "texcoord") {
 			numberOfElements = 2;
@@ -173,7 +174,7 @@ void Buffer::setAttributeName(const char* inputName) {
  *	Call this procedure after constructor
  **/
 void Buffer::setBufferData(GLfloat object_data[]) {
-	if (attribute_name == "coord3d") {
+	if (attribute_name == "coord3d" || attribute_name == "normals") {
 		glBindBuffer(GL_ARRAY_BUFFER, vbo_data);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(object_data), object_data, GL_STATIC_DRAW);
 	} else if (attribute_name == "texcoord") {

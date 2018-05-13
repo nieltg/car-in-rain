@@ -1,4 +1,5 @@
 #include "OBJ_Loader.h"
+#include "Buffer.h"
 #include <GL/glew.h>
 
 #include <glm/glm.hpp>
@@ -12,8 +13,14 @@ class Object
         bool loaded;
     public:
         Object(std::string path);
-        std::vector<std::vector<glm::vec3>> getVertexPositions();
-        std::vector<std::vector<glm::vec3>> getVertexNormals();
-        std::vector<std::vector<glm::vec2>> getVertexTexCoors();
-        std::vector<std::vector<glm::vec3>> getIndices();
+        void setBufferData();
+        bool isLoaded();
+        Buffer vBuffer;
+        Buffer uvBuffer;
+        Buffer normBuffer;
+        Buffer idxBuffer;
+        std::vector<std::vector<glm::vec3>> vertexPositions;
+        std::vector<std::vector<glm::vec3>> vertexNormals;
+        std::vector<std::vector<glm::vec2>> vertexTexCoors;
+        std::vector<std::vector<glm::vec3>> indices;
 };
