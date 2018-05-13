@@ -8,7 +8,7 @@
 
 #include <globjects/globjects.h>
 
-#include "scene.h"
+#include "Scene.h"
 
 
 // Utilities
@@ -68,39 +68,40 @@ int main(int argc, char** argv) {
 
   // Begin program.
 
-  scene_init();
-  SDL_GetWindowSize(window, &scene_w, &scene_h);
+  {
+    Scene scene;
+    SDL_GetWindowSize(window, &scene.width, &scene.height);
 
-  // Event loop.
+    // Event loop.
 
-  bool is_running = true;
+    bool is_running = true;
 
-  while (is_running) {
-    SDL_Event event;
+    while (is_running) {
+      SDL_Event event;
 
-    while (SDL_PollEvent(&event)) {
-      switch (event.type) {
-        case SDL_QUIT:
-          is_running = false;
-          break;
+      while (SDL_PollEvent(&event)) {
+        switch (event.type) {
+          case SDL_QUIT:
+            is_running = false;
+            break;
 
-        case SDL_WINDOWEVENT:
-          switch (event.window.event) {
-            case SDL_WINDOWEVENT_RESIZED:
-              scene_w = event.window.data1;
-              scene_h = event.window.data2;
-              break;
-          }
-          break;
+          case SDL_WINDOWEVENT:
+            switch (event.window.event) {
+              case SDL_WINDOWEVENT_RESIZED:
+                scene.width = event.window.data1;
+                scene.height = event.window.data2;
+                break;
+            }
+            break;
+        }
       }
-    }
 
-    scene_draw();
-    SDL_GL_SwapWindow(window);
+      scene.draw();
+      SDL_GL_SwapWindow(window);
+    }
   }
 
   // Remove everything.
-
   SDL_GL_DeleteContext(context);
   SDL_DestroyWindow(window);
 
