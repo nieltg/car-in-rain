@@ -57,6 +57,67 @@ Object::Object(std::string path) : vBuffer("coord3d"),
             indices.push_back(currentIndices);   
         }
         //Do things with Buffers
-
+        setBufferData();
     }
+}
+
+void Object::setBufferData()
+{
+    //writes every vertex etc data for Buffer to bind
+    std::vector<GLfloat> allVertex;
+    for (auto i = vertexPositions.begin(); i != vertexPositions.end(); i++)
+    {
+        for (auto j = i->begin(); j != i->end(); j++)
+        {
+            glm::vec3 rawData = *j;
+            GLfloat* data = glm::value_ptr(rawData);
+            allVertex.push_back(data[0]);
+            allVertex.push_back(data[1]);
+            allVertex.push_back(data[2]);
+        }
+    }
+    vBuffer.setBufferData(&allVertex[0]);
+    std::vector<GLfloat> allNormals;
+    for (auto i = vertexNormals.begin(); i != vertexNormals.end(); i++)
+    {
+        for (auto j = i->begin(); j != i->end(); j++)
+        {
+            glm::vec3 rawData = *j;
+            GLfloat* data = glm::value_ptr(rawData);
+            allNormals.push_back(data[0]);
+            allNormals.push_back(data[1]);
+            allNormals.push_back(data[2]);
+        }
+    }
+    normBuffer.setBufferData(&allNormals[0]);
+    std::vector<GLfloat> allTexCoords;
+    for (auto i = vertexTexCoors.begin(); i != vertexTexCoors.end(); i++)
+    {
+        for (auto j = i->begin(); j != i->end(); j++)
+        {
+            glm::vec2 rawData = *j;
+            GLfloat* data = glm::value_ptr(rawData);
+            allTexCoords.push_back(data[0]);
+            allTexCoords.push_back(data[1]);
+        }
+    }
+    uvBuffer.setBufferData(&allTexCoords[0]);
+    std::vector<GLushort> allIndices;
+    for (auto i = indices.begin(); i != indices.end(); i++)
+    {
+        for (auto j = i->begin(); j != i->end(); j++)
+        {
+            glm::vec3 rawData = *j;
+            GLfloat* data = glm::value_ptr(rawData);
+            allIndices.push_back((GLushort)data[0]);
+            allIndices.push_back((GLushort)data[1]);
+            allIndices.push_back((GLushort)data[3]);
+        }
+    }
+    idxBuffer.setBufferData(&allIndices[0]);
+}
+
+bool Object::isLoaded()
+{
+    return loaded;
 }

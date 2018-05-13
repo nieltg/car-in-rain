@@ -13,6 +13,8 @@ class Object
         bool loaded;
     public:
         Object(std::string path);
+        void setBufferData();
+        bool isLoaded();
         Buffer vBuffer;
         Buffer uvBuffer;
         Buffer normBuffer;
