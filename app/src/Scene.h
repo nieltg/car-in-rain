@@ -47,4 +47,6 @@ private:
   gl::GLint attr_texcoord;
   gl::GLint uniform_mvp;
   gl::GLint uniform_tex;
+
+  size_t indices_len;
 };

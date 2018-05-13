@@ -1,3 +1,5 @@
+#include "OBJ_Loader.h"
+
 #include "Scene.h"
 
 
@@ -24,7 +26,7 @@ varying vec2 f_texcoord;
 void main(void) {
   vec2 flipped_texcoord = vec2(f_texcoord.x, 1.0 - f_texcoord.y);
   // gl_FragColor = texture2D(mytexture, flipped_texcoord);
-  gl_FragColor = vec4(flipped_texcoord, 0.5, 0.5);
+  gl_FragColor = vec4(flipped_texcoord, 0.5, 1.0);
 }
 )";
 
@@ -150,33 +152,56 @@ Scene::Scene (void) {
   uniform_mvp = g_program->getUniformLocation("mvp");
   // uniform_tex = g_program->getAttributeLocation("mytexture");
 
+  // OBJ loader.
+  std::vector<glm::vec3> vertices;
+  std::vector<glm::vec2> texcoord;
+  std::vector<gl::GLuint> indices;
+
+  {
+    objl::Loader loader;
+
+    if (!loader.LoadFile("mesh.obj")) {
+      throw std::runtime_error("Unable to load mesh.obj");
+    }
+
+    for (const auto& v : loader.LoadedVertices) {
+      const auto& pos = v.Position;
+      vertices.push_back(glm::vec3(pos.X, pos.Y, pos.Z));
+      const auto& tex = v.TextureCoordinate;
+      texcoord.push_back(glm::vec2(tex.X, tex.Y));
+    }
+
+    indices = loader.LoadedIndices;
+    indices_len = indices.size();
+  }
+
   // Buffer.
   m_vao = globjects::VertexArray::create();
 
   m_vertices = globjects::Buffer::create();
-  m_vertices->setData(cubeVertices, gl::GL_STATIC_DRAW);
+  m_vertices->setData(vertices, gl::GL_STATIC_DRAW);
 
   {
     auto vao_bind = m_vao->binding(0);
     vao_bind->setAttribute(attr_coord3d);
     vao_bind->setBuffer(m_vertices.get(), 0, sizeof(glm::vec3));
-    vao_bind->setFormat(24, gl::GL_FLOAT, gl::GL_FALSE, 0);
+    vao_bind->setFormat(vertices.size(), gl::GL_FLOAT, gl::GL_FALSE, 0);
     m_vao->enable(0);
   }
 
   m_texcoord = globjects::Buffer::create();
-  m_texcoord->setData(cubeTexcoords, gl::GL_STATIC_DRAW);
+  m_texcoord->setData(texcoord, gl::GL_STATIC_DRAW);
 
   {
     auto vao_bind = m_vao->binding(1);
     vao_bind->setAttribute(attr_texcoord);
     vao_bind->setBuffer(m_vertices.get(), 0, sizeof(glm::vec2));
-    vao_bind->setFormat(24, gl::GL_FLOAT, gl::GL_FALSE, 0);
+    vao_bind->setFormat(texcoord.size(), gl::GL_FLOAT, gl::GL_FALSE, 0);
     m_vao->enable(1);
   }
 
   m_indices = globjects::Buffer::create();
-  m_indices->setData(cubeIndices, gl::GL_STATIC_DRAW);
+  m_indices->setData(indices, gl::GL_STATIC_DRAW);
 
   m_vao->bindElementBuffer(m_indices.get());
 
@@ -214,6 +239,6 @@ void Scene::draw (void) {
 
   g_program->use();
   g_program->setUniform(uniform_mvp, mvp);
-  m_vao->drawElements(gl::GL_TRIANGLES, 36, gl::GL_UNSIGNED_INT);
+  m_vao->drawElements(gl::GL_TRIANGLES, indices_len, gl::GL_UNSIGNED_INT);
   g_program->release();
 }
