@@ -1,0 +1,5 @@
+# Autodetect text files
+* text=auto
+
+# Use CRLF on CMakeLists.txt
+CMakeLists.txt text eol=crlf
