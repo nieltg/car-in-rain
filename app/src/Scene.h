@@ -26,6 +26,7 @@ public:
 
   Scene (void);
 
+  void resize (int _w, int _h);
   void draw (void);
 
 private:

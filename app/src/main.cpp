@@ -88,8 +88,7 @@ int main(int argc, char** argv) {
           case SDL_WINDOWEVENT:
             switch (event.window.event) {
               case SDL_WINDOWEVENT_RESIZED:
-                scene.width = event.window.data1;
-                scene.height = event.window.data2;
+                scene.resize(event.window.data1, event.window.data2);
                 break;
             }
             break;

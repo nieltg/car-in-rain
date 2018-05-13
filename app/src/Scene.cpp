@@ -185,6 +185,13 @@ Scene::Scene (void) {
   gl::glBlendFunc(gl::GL_SRC_ALPHA, gl::GL_ONE_MINUS_SRC_ALPHA);
 }
 
+void Scene::resize (int _w, int _h) {
+  width = _w;
+  height = _h;
+
+  gl::glViewport(0, 0, _w, _h);
+}
+
 void Scene::draw (void) {
   gl::glClearColor(1.0, 1.0, 1.0, 1.0);
   gl::glClear(gl::GL_COLOR_BUFFER_BIT | gl::GL_DEPTH_BUFFER_BIT);
