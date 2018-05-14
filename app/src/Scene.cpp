@@ -3,30 +3,6 @@
 #include "Scene.h"
 
 
-const char* defaultVertexShaderSource = R"(
-#version 140
-
-attribute vec3 coord3d;
-attribute vec2 texcoord;
-varying vec2 f_texcoord;
-uniform mat4 mvp;
-
-void main(void) {
-  gl_Position = mvp * vec4(coord3d, 1.0);
-  f_texcoord = texcoord;
-}
-)";
-
-const char* defaultFragmentShaderSource = R"(
-#version 140
-
-varying vec2 f_texcoord;
-uniform sampler2D mytexture;
-
-void main(void) {
-  gl_FragColor = texture2D(mytexture, f_texcoord);
-}
-)";
 
 const glm::vec3 cubeVertices[] = {
   // front
@@ -118,8 +94,7 @@ const gl::GLuint cubeIndices[] = {
 
 Scene::Scene (void) {
   // Shaders.
-  g_vertexShaderSource = globjects::Shader::sourceFromString(
-    defaultVertexShaderSource);
+  g_vertexShaderSource = globjects::Shader::sourceFromFile("mesh.v.glsl");
   g_vertexShaderTemplate = globjects::Shader::applyGlobalReplacements(
     g_vertexShaderSource.get());
   g_vertexShader = globjects::Shader::create(
@@ -129,8 +104,7 @@ Scene::Scene (void) {
     throw std::runtime_error("Unable to compile vertex shader");
   }
 
-  g_fragmentShaderSource = globjects::Shader::sourceFromString(
-    defaultFragmentShaderSource);
+  g_fragmentShaderSource = globjects::Shader::sourceFromFile("mesh.f.glsl");
   g_fragmentShaderTemplate = globjects::Shader::applyGlobalReplacements(
     g_fragmentShaderSource.get());
   g_fragmentShader = globjects::Shader::create(

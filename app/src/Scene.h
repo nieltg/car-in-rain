@@ -10,7 +10,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include <glbinding/gl/gl.h>
-#include <globjects/base/StaticStringSource.h>
+#include <globjects/base/File.h>
 #include <globjects/base/StringTemplate.h>
 #include <globjects/Program.h>
 #include <globjects/VertexArray.h>
@@ -32,10 +32,10 @@ public:
 
 private:
   std::unique_ptr<globjects::Program> g_program;
-  std::unique_ptr<globjects::AbstractStringSource> g_vertexShaderSource;
+  std::unique_ptr<globjects::File> g_vertexShaderSource;
   std::unique_ptr<globjects::AbstractStringSource> g_vertexShaderTemplate;
   std::unique_ptr<globjects::Shader> g_vertexShader;
-  std::unique_ptr<globjects::AbstractStringSource> g_fragmentShaderSource;
+  std::unique_ptr<globjects::File> g_fragmentShaderSource;
   std::unique_ptr<globjects::AbstractStringSource> g_fragmentShaderTemplate;
   std::unique_ptr<globjects::Shader> g_fragmentShader;
 
