@@ -3,8 +3,7 @@
 #include "Scene.h"
 
 
-
-const glm::vec3 cubeVertices[] = {
+const std::vector<glm::vec3> cubeVertices = {
   // front
   { -1.0, -1.0,  1.0 },
   {  1.0, -1.0,  1.0 },
@@ -37,7 +36,7 @@ const glm::vec3 cubeVertices[] = {
   {  1.0,  1.0,  1.0 },
 };
 
-const glm::vec2 cubeTexcoords[] = {
+const std::vector<glm::vec2> cubeTexcoords = {
   // front
   { 0.0, 0.0 },
   { 1.0, 0.0 },
@@ -70,7 +69,7 @@ const glm::vec2 cubeTexcoords[] = {
   { 0.0, 1.0 },
 };
 
-const gl::GLuint cubeIndices[] = {
+const std::vector<gl::GLuint> cubeIndices = {
   // front
   0,  1,  2,
   2,  3,  0,
