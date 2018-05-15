@@ -3,14 +3,9 @@
 
 #include <SDL2/SDL.h>
 
+#include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include <glbinding/gl/gl.h>
-
-#include <globjects/base/File.h>
-#include <globjects/base/StringTemplate.h>
-#include <globjects/Buffer.h>
-#include <globjects/Shader.h>
 #include <globjects/VertexAttributeBinding.h>
 
 #include "Rain.h"
