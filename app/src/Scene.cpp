@@ -231,7 +231,7 @@ void Scene::resize (int _w, int _h) {
 }
 
 void Scene::draw (void) {
-  gl::glClearColor(1.0, 1.0, 1.0, 1.0);
+  gl::glClearColor(0.0, 0.0, 0.0, 1.0);
   gl::glClear(gl::GL_COLOR_BUFFER_BIT | gl::GL_DEPTH_BUFFER_BIT);
 
   float angle = SDL_GetTicks() / 1000.0 * glm::radians(15.0);

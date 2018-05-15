@@ -38,7 +38,7 @@ void main(void) {
     vec4(0.2, 0.2, 0.2, 1.0),
     vec4(1.0, 0.8, 0.8, 1.0),
     vec4(1.0, 1.0, 1.0, 1.0),
-    5.0
+    512.0
   );
 
   vec3 normalDirection = normalize(f_norm);
@@ -50,7 +50,7 @@ void main(void) {
   vec4 scene_ambient = vec4(0.2, 0.2, 0.2, 1.0);
   vec3 totalLighting = vec3(scene_ambient) * vec3(myMaterial.ambient);
 
-  if (light0.position.x == 0.0) //directional light?
+  if (light0.position.w == 0.0) //directional light?
   {
     attenuation = 1.0;
     lightDirection = normalize(vec3(light0.position));
