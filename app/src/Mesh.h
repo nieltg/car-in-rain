@@ -15,13 +15,9 @@
 
 class Mesh {
 public:
-  int width = 0;
-  int height = 0;
-
   Mesh (void);
 
-  void resize (int _w, int _h);
-  void draw (void);
+  void draw (glm::mat4 _vp);
 
 private:
   std::unique_ptr<globjects::Program> program;
