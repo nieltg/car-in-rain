@@ -5,6 +5,9 @@ varying vec3 f_coord3d;
 varying vec2 f_texcoord;
 varying vec3 f_norm;
 uniform mat4 mvp;
+uniform mat4 m, v, p;
+uniform mat4 v_inv;
+
 
 void main(void) {
   gl_Position = mvp * vec4(coord3d, 1.0);
