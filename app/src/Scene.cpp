@@ -5,37 +5,27 @@
 
 Scene::Scene (void) {
   // Shaders.
-  g_vertexShaderSource = globjects::Shader::sourceFromFile("mesh.v.glsl");
-  g_vertexShaderTemplate = globjects::Shader::applyGlobalReplacements(
-    g_vertexShaderSource.get());
-  g_vertexShader = globjects::Shader::create(
-    gl::GL_VERTEX_SHADER, g_vertexShaderTemplate.get());
+  shader_v_src = globjects::Shader::sourceFromFile("misc/mesh.v.glsl");
+  shader_v_preprocessed = globjects::Shader::applyGlobalReplacements(
+    shader_v_src.get());
+  shader_v = globjects::Shader::create(
+    gl::GL_VERTEX_SHADER, shader_v_preprocessed.get());
 
-  if (!g_vertexShader->compile()) {
-    throw std::runtime_error("Unable to compile vertex shader");
-  }
+  shader_f_src = globjects::Shader::sourceFromFile("misc/mesh.f.glsl");
+  shader_f_preprocessed = globjects::Shader::applyGlobalReplacements(
+    shader_f_src.get());
+  shader_f = globjects::Shader::create(
+    gl::GL_FRAGMENT_SHADER, shader_f_preprocessed.get());
 
-  g_fragmentShaderSource = globjects::Shader::sourceFromFile("mesh.f.glsl");
-  g_fragmentShaderTemplate = globjects::Shader::applyGlobalReplacements(
-    g_fragmentShaderSource.get());
-  g_fragmentShader = globjects::Shader::create(
-    gl::GL_FRAGMENT_SHADER, g_fragmentShaderTemplate.get());
+  program = globjects::Program::create();
+  program->attach(shader_v.get(), shader_f.get());
 
-  if (!g_fragmentShader->compile()) {
-    throw std::runtime_error("Unable to compile fragment shader");
-  }
+  i_attr_coord3d = program->getAttributeLocation("coord3d");
+  i_attr_texcoord = program->getAttributeLocation("texcoord");
+  i_uniform_mvp = program->getUniformLocation("mvp");
+  i_uniform_tex = program->getAttributeLocation("mytexture");
 
-  g_program = globjects::Program::create();
-  g_program->attach(g_vertexShader.get(), g_fragmentShader.get());
-
-  g_program->link();
-
-  attr_coord3d = g_program->getAttributeLocation("coord3d");
-  attr_texcoord = g_program->getAttributeLocation("texcoord");
-  uniform_mvp = g_program->getUniformLocation("mvp");
-  uniform_tex = g_program->getAttributeLocation("mytexture");
-
-  g_program->setUniform(uniform_tex, 0);
+  program->setUniform(i_uniform_tex, 0);
 
   // OBJ loader.
   std::vector<glm::vec3> vertices;
@@ -59,49 +49,49 @@ Scene::Scene (void) {
     indices = loader.LoadedIndices;
   }
 
- indices_len = indices.size();
+ draw_len = indices.size();
 
   // Buffer.
-  m_vao = globjects::VertexArray::create();
+  vao = globjects::VertexArray::create();
 
-  m_vertices = globjects::Buffer::create();
-  m_vertices->setData(vertices, gl::GL_STATIC_DRAW);
+  b_vertices = globjects::Buffer::create();
+  b_vertices->setData(vertices, gl::GL_STATIC_DRAW);
 
   {
-    auto vao_bind = m_vao->binding(0);
-    vao_bind->setAttribute(attr_coord3d);
-    vao_bind->setBuffer(m_vertices.get(), 0, sizeof(glm::vec3));
+    auto vao_bind = vao->binding(0);
+    vao_bind->setAttribute(i_attr_coord3d);
+    vao_bind->setBuffer(b_vertices.get(), 0, sizeof(glm::vec3));
     vao_bind->setFormat(vertices.size(), gl::GL_FLOAT, gl::GL_FALSE, 0);
-    m_vao->enable(0);
+    vao->enable(0);
   }
 
-  m_texcoord = globjects::Buffer::create();
-  m_texcoord->setData(texcoord, gl::GL_STATIC_DRAW);
+  b_texcoord = globjects::Buffer::create();
+  b_texcoord->setData(texcoord, gl::GL_STATIC_DRAW);
 
   {
-    auto vao_bind = m_vao->binding(1);
-    vao_bind->setAttribute(attr_texcoord);
-    vao_bind->setBuffer(m_texcoord.get(), 0, sizeof(glm::vec2));
+    auto vao_bind = vao->binding(1);
+    vao_bind->setAttribute(i_attr_texcoord);
+    vao_bind->setBuffer(b_texcoord.get(), 0, sizeof(glm::vec2));
     vao_bind->setFormat(texcoord.size(), gl::GL_FLOAT, gl::GL_FALSE, 0);
-    m_vao->enable(1);
+    vao->enable(1);
   }
 
-  m_indices = globjects::Buffer::create();
-  m_indices->setData(indices, gl::GL_STATIC_DRAW);
+  b_indices = globjects::Buffer::create();
+  b_indices->setData(indices, gl::GL_STATIC_DRAW);
 
-  m_vao->bindElementBuffer(m_indices.get());
+  vao->bindElementBuffer(b_indices.get());
 
   // Texture.
   {
     auto res_texture = IMG_Load("mesh.png");
 
-    m_texture = globjects::Texture::create(gl::GL_TEXTURE_2D);
-    m_texture->setParameter(gl::GL_TEXTURE_MIN_FILTER, gl::GL_LINEAR);
-    m_texture->setParameter(gl::GL_TEXTURE_MAG_FILTER, gl::GL_LINEAR);
-    m_texture->setParameter(gl::GL_TEXTURE_WRAP_S, gl::GL_CLAMP_TO_EDGE);
-    m_texture->setParameter(gl::GL_TEXTURE_WRAP_T, gl::GL_CLAMP_TO_EDGE);
+    texture = globjects::Texture::create(gl::GL_TEXTURE_2D);
+    texture->setParameter(gl::GL_TEXTURE_MIN_FILTER, gl::GL_LINEAR);
+    texture->setParameter(gl::GL_TEXTURE_MAG_FILTER, gl::GL_LINEAR);
+    texture->setParameter(gl::GL_TEXTURE_WRAP_S, gl::GL_CLAMP_TO_EDGE);
+    texture->setParameter(gl::GL_TEXTURE_WRAP_T, gl::GL_CLAMP_TO_EDGE);
 
-    m_texture->image2D(
+    texture->image2D(
       0,
       gl::GL_RGBA,
       glm::ivec2(res_texture->w, res_texture->h),
@@ -147,12 +137,12 @@ void Scene::draw (void) {
   glm::mat4 mvp = projection * view * model * anim;
 
   gl::glActiveTexture(gl::GL_TEXTURE0);
-  m_texture->bind();
+  texture->bind();
 
-  g_program->use();
-  g_program->setUniform(uniform_mvp, mvp);
-  m_vao->drawElements(gl::GL_TRIANGLES, indices_len, gl::GL_UNSIGNED_INT);
-  g_program->release();
+  program->use();
+  program->setUniform(i_uniform_mvp, mvp);
+  vao->drawElements(gl::GL_TRIANGLES, draw_len, gl::GL_UNSIGNED_INT);
+  program->release();
 
-  m_texture->unbind();
+  texture->unbind();
 }

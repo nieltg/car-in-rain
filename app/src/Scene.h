@@ -31,25 +31,25 @@ public:
   void draw (void);
 
 private:
-  std::unique_ptr<globjects::Program> g_program;
-  std::unique_ptr<globjects::File> g_vertexShaderSource;
-  std::unique_ptr<globjects::AbstractStringSource> g_vertexShaderTemplate;
-  std::unique_ptr<globjects::Shader> g_vertexShader;
-  std::unique_ptr<globjects::File> g_fragmentShaderSource;
-  std::unique_ptr<globjects::AbstractStringSource> g_fragmentShaderTemplate;
-  std::unique_ptr<globjects::Shader> g_fragmentShader;
+  std::unique_ptr<globjects::Program> program;
+  std::unique_ptr<globjects::File> shader_v_src;
+  std::unique_ptr<globjects::AbstractStringSource> shader_v_preprocessed;
+  std::unique_ptr<globjects::Shader> shader_v;
+  std::unique_ptr<globjects::File> shader_f_src;
+  std::unique_ptr<globjects::AbstractStringSource> shader_f_preprocessed;
+  std::unique_ptr<globjects::Shader> shader_f;
 
-  std::unique_ptr<globjects::VertexArray> m_vao;
-  std::unique_ptr<globjects::Buffer> m_vertices;
-  std::unique_ptr<globjects::Buffer> m_texcoord;
-  std::unique_ptr<globjects::Buffer> m_indices;
+  std::unique_ptr<globjects::VertexArray> vao;
+  std::unique_ptr<globjects::Buffer> b_vertices;
+  std::unique_ptr<globjects::Buffer> b_texcoord;
+  std::unique_ptr<globjects::Buffer> b_indices;
 
-  std::unique_ptr<globjects::Texture> m_texture;
+  std::unique_ptr<globjects::Texture> texture;
 
-  gl::GLint attr_coord3d;
-  gl::GLint attr_texcoord;
-  gl::GLint uniform_mvp;
-  gl::GLint uniform_tex;
+  gl::GLint i_attr_coord3d;
+  gl::GLint i_attr_texcoord;
+  gl::GLint i_uniform_mvp;
+  gl::GLint i_uniform_tex;
 
-  size_t indices_len;
+  size_t draw_len;
 };
