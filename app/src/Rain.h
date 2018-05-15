@@ -30,6 +30,7 @@ private:
 
   gl::GLint i_attr_coord3d;
   gl::GLint i_uniform_mvp;
+  gl::GLint i_uniform_time;
 
   std::unique_ptr<globjects::VertexArray> vao;
   std::unique_ptr<globjects::Buffer> b_vertices;

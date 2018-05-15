@@ -1,5 +1,7 @@
 #include <vector>
 
+#include <SDL2/SDL.h>
+
 #include <glm/gtc/matrix_transform.hpp>
 
 #include <glbinding/gl/gl.h>
@@ -32,6 +34,7 @@ Rain::Rain (void) {
 
   i_attr_coord3d = program->getAttributeLocation("coord3d");
   i_uniform_mvp = program->getUniformLocation("mvp");
+  i_uniform_time = program->getUniformLocation("time");
 
   // Vertices.
   std::vector<glm::vec3> vertices;
@@ -62,6 +65,7 @@ void Rain::draw (glm::mat4 _vp) {
 
   program->use();
   program->setUniform(i_uniform_mvp, mvp);
+  program->setUniform(i_uniform_time, SDL_GetTicks());
   vao->drawArrays(gl::GL_POINTS, 0, draw_len);
   program->release();
 }
