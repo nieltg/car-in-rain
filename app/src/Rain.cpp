@@ -1,3 +1,4 @@
+#include <random>
 #include <vector>
 
 #include <SDL2/SDL.h>
@@ -39,8 +40,13 @@ Rain::Rain (void) {
   // Vertices.
   std::vector<glm::vec3> vertices;
 
+  std::random_device rd;
+  std::mt19937 generator(rd());
+
+  std::uniform_real_distribution<> r(-5.0, 5.0);
+
   for (int i = 0; i < N_PARTICLE; ++i) {
-    glm::vec3 pos = glm::vec3(0.1 * i, 0.1 * i, 0.1 * i);
+    glm::vec3 pos = glm::vec3(r(generator), r(generator), r(generator));
 
     vertices.push_back(pos);
     vertices.push_back(pos + glm::vec3(0.0, 0.1, 0.0));
