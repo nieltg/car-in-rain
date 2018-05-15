@@ -99,12 +99,33 @@ void ParticleContainer::linkBuffer(std::vector<glm::vec3> vertices, std::vector<
 	m_indices->setData(indices, gl::GL_STATIC_DRAW);
 
 	//BUFFER POSITION//
-	GLfloat* g_particule_position_size_data = new GLfloat[MaxParticles * 4];
-	GLubyte* g_particule_color_data         = new GLubyte[MaxParticles * 4];	
-	//BUFFER POSITION//
+	/*gl::GLfloat* g_position_size_data = new gl::GLfloat[MAX_PARTICLES * 4];
+	gl::GLubyte* g_color_data         = new gl::GLubyte[MAX_PARTICLES * 4];	
 
 	buffer_position = globjects::Buffer::create();
-	buffer_position->setData();
+	buffer_position->setData(g_position_size_data, gl::GL_STREAM_DRAW);
+
+	{
+		auto vao_bind = m_vao->binding(2);
+		vao_bind->setAttribute(attr_pos);
+		vao_bind->setBuffer(NULL, 0, sizeof(buffer_position));
+		vao_bind->setFormat(buffer_position.size(), gl::GL_FLOAT, gl::GL_FALSE, 0);
+		m_vao->enable(1);
+	}
+	//BUFFER POSITION//
+
+	//BUFFER COLOR//
+	buffer_color = globjects::Buffer::create();
+	buffer_color->setData(g_color_data, gl::GL_STREAM_DRAW);
+
+	{
+		auto vao_bind = m_vao->binding(3);
+		vao_bind->setAttribute(attr_color);
+		vao_bind->setBuffer(NULL, 0, sizeof(buffer_color));
+		vao_bind->setFormat(buffer_position.size(), gl::GL_FLOAT, gl::GL_FALSE, 0);
+		m_vao->enable(1);
+	}*/
+	//BUFFER COLOR//
 
 	m_vao->bindElementBuffer(m_indices.get());
 	
