@@ -1,5 +1,6 @@
 attribute vec3 coord3d;
 attribute vec2 texcoord;
+attribute vec3 norm;
 varying vec2 f_texcoord;
 uniform sampler2D mytexture;
 
@@ -29,6 +30,12 @@ void main(void) {
     0.0, 1.0, 0.0,
     180.0, 0.0,
     vec3(0.0, 0.0, 0.0)
+  );
+  material mymaterial = material(
+    vec4(0.2, 0.2, 0.2, 1.0),
+    vec4(1.0, 0.8, 0.8, 1.0),
+    vec4(1.0, 1.0, 1.0, 1.0),
+    5.0
   );
 
   vec2 flipped_texcoord = vec2(f_texcoord.x, 1.0 - f_texcoord.y);

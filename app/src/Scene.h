@@ -41,12 +41,14 @@ private:
 
   std::unique_ptr<globjects::VertexArray> m_vao;
   std::unique_ptr<globjects::Buffer> m_vertices;
+  std::unique_ptr<globjects::Buffer> m_normals;
   std::unique_ptr<globjects::Buffer> m_texcoord;
   std::unique_ptr<globjects::Buffer> m_indices;
 
   std::unique_ptr<globjects::Texture> m_texture;
 
   gl::GLint attr_coord3d;
+  gl::GLint attr_norm;
   gl::GLint attr_texcoord;
   gl::GLint uniform_mvp;
   gl::GLint uniform_tex;
