@@ -19,6 +19,7 @@
 #include <globjects/Buffer.h>
 #include <globjects/Shader.h>
 
+#include "ParticleContainer.h"
 
 class Scene {
 public:

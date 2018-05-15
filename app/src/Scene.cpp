@@ -90,6 +90,7 @@ const std::vector<gl::GLuint> cubeIndices = {
   22, 23, 20,
 };
 
+ParticleContainer asap;
 
 Scene::Scene (void) {
   // Shaders.
@@ -125,6 +126,11 @@ Scene::Scene (void) {
 
   g_program->setUniform(uniform_tex, 0);
 
+  //PARTICLE ASAP SHADER//
+  //asap = ParticleContainer(1000);
+  asap.createProgram();
+  //PARTICLE ASAP SHADER//
+
   // OBJ loader.
   std::vector<glm::vec3> vertices;
   std::vector<glm::vec2> texcoord;
@@ -148,6 +154,37 @@ Scene::Scene (void) {
   }
 
  indices_len = indices.size();
+
+  //==ASAP OBJ==//
+  std::vector<glm::vec3> verticesAs;
+  std::vector<glm::vec2> texcoordAs;
+  std::vector<gl::GLuint> indicesAs;
+
+  {
+    objl::Loader loaderAs;
+
+    if (!loaderAs.LoadFile("sphere.obj")) {
+      throw std::runtime_error("Unable to load mesh.obj");
+    }
+
+    for (const auto& v : loaderAs.LoadedVertices) {
+      const auto& pos = v.Position;
+      verticesAs.push_back(glm::vec3(pos.X, pos.Y, pos.Z));
+      const auto& tex = v.TextureCoordinate;
+      texcoordAs.push_back(glm::vec2(tex.X, tex.Y));
+    }
+
+    indicesAs = loaderAs.LoadedIndices;
+  }
+  //==ASAP OBJ==//
+
+  //==ASAP BUFFER==//
+  asap.linkBuffer(verticesAs,texcoordAs,indicesAs,indices.size());
+  //==ASAP BUFFER==//
+
+  //==ASAP TEXTURE==//
+  asap.setTexture();
+  //==ASAP TEXTURE==//
 
   // Buffer.
   m_vao = globjects::VertexArray::create();
@@ -243,4 +280,8 @@ void Scene::draw (void) {
   g_program->release();
 
   m_texture->unbind();
+
+  //==ASAP DRAW==//
+  asap.drawParticles(1, mvp);
+  //==ASAP DRAW==//
 }
