@@ -49,7 +49,7 @@ Rain::Rain (void) {
     glm::vec3 pos = glm::vec3(r(generator), r(generator), r(generator));
 
     vertices.push_back(pos);
-    vertices.push_back(pos + glm::vec3(0.0, 0.1, 0.0));
+    vertices.push_back(pos);
   }
 
   vao = globjects::VertexArray::create();
