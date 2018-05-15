@@ -3,12 +3,16 @@
 
 #include <SDL2/SDL.h>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
 #include <glbinding/gl/gl.h>
 #include <glbinding/Binding.h>
 
 #include <globjects/globjects.h>
 
-#include "Scene.h"
+#include "Mesh.h"
+#include "Rain.h"
 
 
 // Utilities
@@ -69,8 +73,15 @@ int main(int argc, char** argv) {
   // Begin program.
 
   {
-    Scene scene;
-    SDL_GetWindowSize(window, &scene.width, &scene.height);
+    int width, height;
+    SDL_GetWindowSize(window, &width, &height);
+
+    Mesh mesh;
+    Rain rain;
+
+    gl::glEnable(gl::GL_BLEND);
+    gl::glEnable(gl::GL_DEPTH_TEST);
+    gl::glBlendFunc(gl::GL_SRC_ALPHA, gl::GL_ONE_MINUS_SRC_ALPHA);
 
     // Event loop.
 
@@ -88,14 +99,30 @@ int main(int argc, char** argv) {
           case SDL_WINDOWEVENT:
             switch (event.window.event) {
               case SDL_WINDOWEVENT_RESIZED:
-                scene.resize(event.window.data1, event.window.data2);
+                width = event.window.data1;
+                height = event.window.data2;
+                gl::glViewport(0, 0, width, height);
                 break;
             }
             break;
         }
       }
 
-      scene.draw();
+      // Draw.
+      gl::glClearColor(1.0, 1.0, 1.0, 1.0);
+      gl::glClear(gl::GL_COLOR_BUFFER_BIT | gl::GL_DEPTH_BUFFER_BIT);
+
+      glm::mat4 view = glm::lookAt(
+        glm::vec3(0.0, 2.0, 0.0),
+        glm::vec3(0.0, 0.0, -4.0),
+        glm::vec3(0.0, 1.0, 0.0));
+      glm::mat4 projection = glm::perspective(
+        45.0f, 1.0f * width / height, 0.1f, 10.0f);
+
+      glm::mat4 vp = projection * view;
+
+      mesh.draw(vp);
+      rain.draw(vp);
       SDL_GL_SwapWindow(window);
     }
   }
