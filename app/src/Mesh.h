@@ -20,12 +20,12 @@
 #include <globjects/Shader.h>
 
 
-class Scene {
+class Mesh {
 public:
   int width = 0;
   int height = 0;
 
-  Scene (void);
+  Mesh (void);
 
   void resize (int _w, int _h);
   void draw (void);
