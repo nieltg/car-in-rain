@@ -169,7 +169,7 @@ Scene::Scene (void) {
   {
     auto vao_bind = m_vao->binding(1);
     vao_bind->setAttribute(attr_texcoord);
-    vao_bind->setBuffer(m_vertices.get(), 0, sizeof(glm::vec2));
+    vao_bind->setBuffer(m_texcoord.get(), 0, sizeof(glm::vec2));
     vao_bind->setFormat(texcoord.size(), gl::GL_FLOAT, gl::GL_FALSE, 0);
     m_vao->enable(1);
   }
