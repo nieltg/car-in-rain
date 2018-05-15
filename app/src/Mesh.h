@@ -2,22 +2,15 @@
 
 #include <memory>
 
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
-
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-
 #include <glbinding/gl/gl.h>
+
 #include <globjects/base/File.h>
 #include <globjects/base/StringTemplate.h>
-#include <globjects/Program.h>
-#include <globjects/VertexArray.h>
-#include <globjects/Texture.h>
-#include <globjects/VertexAttributeBinding.h>
 #include <globjects/Buffer.h>
+#include <globjects/Program.h>
 #include <globjects/Shader.h>
+#include <globjects/Texture.h>
+#include <globjects/VertexArray.h>
 
 
 class Mesh {

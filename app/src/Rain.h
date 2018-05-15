@@ -2,13 +2,15 @@
 
 #include <memory>
 
-#include <glm/glm.hpp>
+#include <glbinding/gl/gl.h>
 
 #include <globjects/base/File.h>
 #include <globjects/base/StringTemplate.h>
+#include <globjects/Buffer.h>
 #include <globjects/Program.h>
-#include <globjects/VertexArray.h>
+#include <globjects/Shader.h>
 #include <globjects/Texture.h>
+#include <globjects/VertexArray.h>
 
 
 class Rain {
