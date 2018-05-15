@@ -11,6 +11,7 @@
 
 #include <globjects/globjects.h>
 
+#include "Mesh.h"
 #include "Rain.h"
 
 
@@ -75,6 +76,7 @@ int main(int argc, char** argv) {
     int width, height;
     SDL_GetWindowSize(window, &width, &height);
 
+    Mesh mesh;
     Rain rain;
 
     gl::glEnable(gl::GL_BLEND);
@@ -119,6 +121,7 @@ int main(int argc, char** argv) {
 
       glm::mat4 vp = projection * view;
 
+      mesh.draw(vp);
       rain.draw(vp);
       SDL_GL_SwapWindow(window);
     }
