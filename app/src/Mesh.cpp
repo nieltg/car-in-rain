@@ -116,39 +116,18 @@ Mesh::Mesh (void) {
 
     SDL_FreeSurface(res_texture);
   }
-
-  // OpenGL.
-  gl::glEnable(gl::GL_BLEND);
-  gl::glEnable(gl::GL_DEPTH_TEST);
-  gl::glBlendFunc(gl::GL_SRC_ALPHA, gl::GL_ONE_MINUS_SRC_ALPHA);
 }
 
-void Mesh::resize (int _w, int _h) {
-  width = _w;
-  height = _h;
-
-  gl::glViewport(0, 0, _w, _h);
-}
-
-void Mesh::draw (void) {
-  gl::glClearColor(1.0, 1.0, 1.0, 1.0);
-  gl::glClear(gl::GL_COLOR_BUFFER_BIT | gl::GL_DEPTH_BUFFER_BIT);
-
+void Mesh::draw (glm::mat4 _vp) {
   float angle = SDL_GetTicks() / 1000.0 * glm::radians(15.0);
+
   glm::mat4 anim =
     glm::rotate(glm::mat4(1.0f), angle*3.0f, glm::vec3(1, 0, 0))
     * glm::rotate(glm::mat4(1.0f), angle*2.0f, glm::vec3(0, 1, 0))
     * glm::rotate(glm::mat4(1.0f), angle*4.0f, glm::vec3(0, 0, 1));
-
   glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0, 0.0, -4.0));
-  glm::mat4 view = glm::lookAt(
-    glm::vec3(0.0, 2.0, 0.0),
-    glm::vec3(0.0, 0.0, -4.0),
-    glm::vec3(0.0, 1.0, 0.0));
-  glm::mat4 projection = glm::perspective(
-    45.0f, 1.0f * width / height, 0.1f, 10.0f);
 
-  glm::mat4 mvp = projection * view * model * anim;
+  glm::mat4 mvp = _vp * model * anim;
 
   gl::glActiveTexture(gl::GL_TEXTURE0);
   texture->bind();
