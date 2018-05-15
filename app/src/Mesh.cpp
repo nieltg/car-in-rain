@@ -35,8 +35,8 @@ Mesh::Mesh (void) {
   {
     objl::Loader loader;
 
-    if (!loader.LoadFile("mesh.obj")) {
-      throw std::runtime_error("Unable to load mesh.obj");
+    if (!loader.LoadFile("misc/mesh.obj")) {
+      throw std::runtime_error("Unable to load misc/mesh.obj");
     }
 
     for (const auto& v : loader.LoadedVertices) {
@@ -83,7 +83,11 @@ Mesh::Mesh (void) {
 
   // Texture.
   {
-    auto res_texture = IMG_Load("mesh.png");
+    auto res_texture = IMG_Load("misc/mesh.png");
+
+    if (!res_texture) {
+      throw std::runtime_error("Unable to load misc/mesh.png");
+    }
 
     texture = globjects::Texture::create(gl::GL_TEXTURE_2D);
     texture->setParameter(gl::GL_TEXTURE_MIN_FILTER, gl::GL_LINEAR);
