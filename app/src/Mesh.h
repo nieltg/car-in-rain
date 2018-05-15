@@ -30,12 +30,14 @@ private:
 
   std::unique_ptr<globjects::VertexArray> vao;
   std::unique_ptr<globjects::Buffer> b_vertices;
+  std::unique_ptr<globjects::Buffer> b_normals;
   std::unique_ptr<globjects::Buffer> b_texcoord;
   std::unique_ptr<globjects::Buffer> b_indices;
 
   std::unique_ptr<globjects::Texture> texture;
 
   gl::GLint i_attr_coord3d;
+  gl::GLint i_attr_normal;
   gl::GLint i_attr_texcoord;
   gl::GLint i_uniform_mvp;
   gl::GLint i_uniform_tex;

@@ -31,6 +31,7 @@ Mesh::Mesh (void) {
   program->attach(shader_v.get(), shader_f.get());
 
   i_attr_coord3d = program->getAttributeLocation("coord3d");
+  i_attr_normal = program->getAttributeLocation("norm");
   i_attr_texcoord = program->getAttributeLocation("texcoord");
   i_uniform_mvp = program->getUniformLocation("mvp");
   i_uniform_tex = program->getAttributeLocation("mytexture");
@@ -39,6 +40,7 @@ Mesh::Mesh (void) {
 
   // OBJ loader.
   std::vector<glm::vec3> vertices;
+  std::vector<glm::vec3> normals;
   std::vector<glm::vec2> texcoord;
   std::vector<gl::GLuint> indices;
 
@@ -52,6 +54,8 @@ Mesh::Mesh (void) {
     for (const auto& v : loader.LoadedVertices) {
       const auto& pos = v.Position;
       vertices.push_back(glm::vec3(pos.X, pos.Y, pos.Z));
+      const auto& norm = v.Normal;
+      normals.push_back(glm::vec3(norm.X, norm.Y, norm.Z));
       const auto& tex = v.TextureCoordinate;
       texcoord.push_back(glm::vec2(tex.X, tex.Y));
     }
@@ -75,15 +79,26 @@ Mesh::Mesh (void) {
     vao->enable(0);
   }
 
+  b_normals = globjects::Buffer::create();
+  b_normals->setData(normals, gl::GL_STATIC_DRAW);
+
+  {
+    auto vao_bind = vao->binding(1);
+    vao_bind->setAttribute(i_attr_normal);
+    vao_bind->setBuffer(b_normals.get(), 0, sizeof(glm::vec3));
+    vao_bind->setFormat(normals.size(), gl::GL_FLOAT, gl::GL_FALSE, 0);
+    vao->enable(1);
+  }
+
   b_texcoord = globjects::Buffer::create();
   b_texcoord->setData(texcoord, gl::GL_STATIC_DRAW);
 
   {
-    auto vao_bind = vao->binding(1);
+    auto vao_bind = vao->binding(2);
     vao_bind->setAttribute(i_attr_texcoord);
     vao_bind->setBuffer(b_texcoord.get(), 0, sizeof(glm::vec2));
     vao_bind->setFormat(texcoord.size(), gl::GL_FLOAT, gl::GL_FALSE, 0);
-    vao->enable(1);
+    vao->enable(2);
   }
 
   b_indices = globjects::Buffer::create();
