@@ -142,13 +142,12 @@ Scene::Scene (void) {
       vertices.push_back(glm::vec3(pos.X, pos.Y, pos.Z));
       const auto& tex = v.TextureCoordinate;
       texcoord.push_back(glm::vec2(tex.X, tex.Y));
-
-      std::cerr << "COORD " << tex.X << " " << tex.Y << std::endl;
     }
 
     indices = loader.LoadedIndices;
-    indices_len = indices.size();
   }
+
+ indices_len = indices.size();
 
   // Buffer.
   m_vao = globjects::VertexArray::create();
