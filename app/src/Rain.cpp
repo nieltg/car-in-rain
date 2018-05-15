@@ -40,7 +40,10 @@ Rain::Rain (void) {
   std::vector<glm::vec3> vertices;
 
   for (int i = 0; i < N_PARTICLE; ++i) {
-    vertices.push_back(glm::vec3(0.1 * i, 0.1 * i, 0.1 * i));
+    glm::vec3 pos = glm::vec3(0.1 * i, 0.1 * i, 0.1 * i);
+
+    vertices.push_back(pos);
+    vertices.push_back(pos + glm::vec3(0.0, 0.1, 0.0));
   }
 
   vao = globjects::VertexArray::create();
@@ -66,6 +69,6 @@ void Rain::draw (glm::mat4 _vp) {
   program->use();
   program->setUniform(i_uniform_mvp, mvp);
   program->setUniform(i_uniform_time, SDL_GetTicks());
-  vao->drawArrays(gl::GL_POINTS, 0, draw_len);
+  vao->drawArrays(gl::GL_LINES, 0, draw_len);
   program->release();
 }
