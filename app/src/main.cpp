@@ -13,7 +13,7 @@
 
 #include "Mesh.h"
 #include "Rain.h"
-
+#include "Smoke.h"
 
 // Utilities
 
@@ -78,6 +78,7 @@ int main(int argc, char** argv) {
 
     Mesh mesh;
     Rain rain;
+    Smoke smoke;
 
     gl::glEnable(gl::GL_BLEND);
     gl::glEnable(gl::GL_DEPTH_TEST);
@@ -123,6 +124,7 @@ int main(int argc, char** argv) {
 
       mesh.draw(vp);
       rain.draw(vp);
+      smoke.draw(vp,view);
       SDL_GL_SwapWindow(window);
     }
   }

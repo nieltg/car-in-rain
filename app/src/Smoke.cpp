@@ -18,13 +18,13 @@ Smoke::Smoke (void) {
 	shader_v_preprocessed = globjects::Shader::applyGlobalReplacements(
 	shader_v_src.get());
 	shader_v = globjects::Shader::create(
-	gl::GL_VERTEX_SHADER, shader_v_preprocessed.get());
+		gl::GL_VERTEX_SHADER, shader_v_preprocessed.get());
 
 	shader_f_src = globjects::Shader::sourceFromFile("misc/Particle.f.glsl");
 	shader_f_preprocessed = globjects::Shader::applyGlobalReplacements(
 	shader_f_src.get());
 	shader_f = globjects::Shader::create(
-	gl::GL_FRAGMENT_SHADER, shader_f_preprocessed.get());
+		gl::GL_FRAGMENT_SHADER, shader_f_preprocessed.get());
 
 	program = globjects::Program::create();
 	program->attach(shader_v.get(), shader_f.get());
@@ -63,7 +63,7 @@ Smoke::Smoke (void) {
 		auto vao_bind = vao->binding(1);
 		//vao_bind->setAttribute(i_attr_coord3d);
 		vao_bind->setBuffer(b_position.get(), 0, sizeof(glm::vec3));
-		vao_bind->setFormat(sizeof(position_size_data), gl::GL_FLOAT*, gl::GL_FALSE, 0);
+		vao_bind->setFormat(sizeof(position_size_data), gl::GL_FLOAT, gl::GL_FALSE, 0);
 		vao->enable(0);
 	}
 
@@ -76,7 +76,7 @@ Smoke::Smoke (void) {
 		auto vao_bind = vao->binding(2);
 		//vao_bind->setAttribute(i_attr_coord3d);
 		vao_bind->setBuffer(b_color.get(), 0, sizeof(glm::vec3));
-		vao_bind->setFormat(sizeof(color_data), gl::GL_uByte*, gl::GL_FALSE, 0);
+		vao_bind->setFormat(sizeof(color_data), gl::GL_UNSIGNED_BYTE, gl::GL_FALSE, 0);
 		vao->enable(0);
 	}
 	// Vertices.
@@ -112,6 +112,7 @@ Smoke::Smoke (void) {
 	// Texture.
 	{
 		auto res_texture = IMG_Load("misc/mesh.png");
+		//auto res_texture = loadDDS("misc/particle.DDS");
 
 		if (!res_texture) {
 			throw std::runtime_error("Unable to load misc/mesh.png");
@@ -137,6 +138,10 @@ Smoke::Smoke (void) {
 }
 
 void Smoke::draw (glm::mat4 _vp, glm::mat4 _v) {
+	glm::vec3 CameraPosition(glm::inverse(_v)[3]);
+	//int count = simulateParticles(SDL_GetTicks(), CameraPosition);
+	int count = 1000;
+
 	glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0, 0.0, -4.0));
 	glm::mat4 mvp = _vp * model;
 
@@ -147,8 +152,23 @@ void Smoke::draw (glm::mat4 _vp, glm::mat4 _v) {
 	program->setUniform(CameraRight_worldspace_ID, glm::vec3(_v[0][0],_v[1][0],_v[2][0]));
 	program->setUniform(CameraUp_worldspace_ID, glm::vec3(_v[0][1],_v[1][1],_v[2][1]));
 	program->setUniform(ViewProjMatrixID, &_vp[0][0]);
+
+	{
+		auto vao_bind = vao->binding(1);
+		vao_bind->setAttribute(1);
+		vao_bind->setBuffer(b_position.get(), 0, sizeof(glm::vec3));
+		vao_bind->setFormat(sizeof(position_size_data), gl::GL_FLOAT, gl::GL_FALSE, 0);
+		vao->enable(0);
+	}
+	{
+		auto vao_bind = vao->binding(2);
+		vao_bind->setAttribute(2);
+		vao_bind->setBuffer(b_color.get(), 0, sizeof(glm::vec3));
+		vao_bind->setFormat(sizeof(color_data), gl::GL_UNSIGNED_BYTE, gl::GL_FALSE, 0);
+		vao->enable(0);
+	}
 	//program->setUniform(i_uniform_time, SDL_GetTicks());
-	int ParticlesCount = 2;
+	int ParticlesCount = count;
 	vao->drawArraysInstanced(gl::GL_TRIANGLE_STRIP, 0, 4, ParticlesCount);
 	program->release();
 
@@ -156,10 +176,16 @@ void Smoke::draw (glm::mat4 _vp, glm::mat4 _v) {
 }
 
 void Smoke::setPositionData(int ParticlesCount, gl::GLfloat x, gl::GLfloat y, gl::GLfloat z, gl::GLfloat size) {
-
+	position_size_data[4*ParticlesCount+0] = x;
+	position_size_data[4*ParticlesCount+1] = y;
+	position_size_data[4*ParticlesCount+2] = z;
+	position_size_data[4*ParticlesCount+3] = size;
 }
 void Smoke::setColorData(int ParticlesCount, gl::GLubyte r, gl::GLubyte g, gl::GLubyte b, gl::GLubyte a) {
-
+	color_data[4*ParticlesCount+0] = r;
+	color_data[4*ParticlesCount+1] = g;
+	color_data[4*ParticlesCount+2] = b;
+	color_data[4*ParticlesCount+3] = a;
 }
 
 int Smoke::findUnusedParticle() {
@@ -190,7 +216,7 @@ void Smoke::sortParticles() {
 	std::sort(&containerP[0], &containerP[MAX_PARTICLES]);
 }
 
-void Smoke::simulateParticles(int deltaTime, glm::vec3 cameraPosition) {
+int Smoke::simulateParticles(int deltaTime, glm::vec3 cameraPosition) {
 	int newparticles = (int)(deltaTime*10000.0);
 	if (newparticles > (int)(0.016f*10000.0)) {
 		newparticles = (int)(0.016f*10000.0);
@@ -222,5 +248,6 @@ void Smoke::simulateParticles(int deltaTime, glm::vec3 cameraPosition) {
 		}
 	}
 	sortParticles();
+	return (particlesCount);
 	//drawParticles(particlesCount);
 }

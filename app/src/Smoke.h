@@ -25,7 +25,7 @@ class Smoke {
 
 		int findUnusedParticle();
 		void sortParticles();
-		void simulateParticles(int deltaTime, glm::vec3 cameraPosition);
+		int simulateParticles(int deltaTime, glm::vec3 cameraPosition);
 		void setPositionData(int ParticlesCount, gl::GLfloat x, gl::GLfloat y, gl::GLfloat z, gl::GLfloat size);
 		void setColorData(int ParticlesCount, gl::GLubyte r, gl::GLubyte g, gl::GLubyte b, gl::GLubyte a);
 
