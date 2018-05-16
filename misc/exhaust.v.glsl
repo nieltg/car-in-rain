@@ -12,7 +12,7 @@ void main (void) {
   float time2 = time;
   float time1 = time2 / 10000.0;
 
-  float frame = mod(coord3d.z - 0.5 + time1, 1.6);
+  float frame = 0.1 + mod(coord3d.z - 0.5 + time1, 1.5);
 
   vec3 pos;
   pos.x = -coord3d.x / sqrt(frame);
