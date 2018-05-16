@@ -87,6 +87,8 @@ int main(int argc, char** argv) {
     // Event loop.
 
     bool is_running = true;
+    float yaw = 0;
+    float pitch = 0;
 
     while (is_running) {
       SDL_Event event;
@@ -106,6 +108,13 @@ int main(int argc, char** argv) {
                 break;
             }
             break;
+
+          case SDL_MOUSEMOTION:
+            if (event.motion.state & SDL_BUTTON_LMASK){
+              yaw += (float)event.motion.xrel;
+              pitch += (float)event.motion.yrel;
+            }
+            break;
         }
       }
 
@@ -117,7 +126,9 @@ int main(int argc, char** argv) {
         glm::vec3(0.0, 2.0, 0.0),
         glm::vec3(0.0, 0.0, -4.0),
         glm::vec3(0.0, 1.0, 0.0));
-      view = glm::translate(view, glm::vec3(0.0, 0.0, -4.0));
+      view = glm::translate(view, glm::vec3(0.0, 0.0, -4.0)) 
+      * glm::rotate(glm::mat4(1.0f), pitch*0.05f, glm::vec3(1, 0, 0))
+      * glm::rotate(glm::mat4(1.0f), yaw*0.05f, glm::vec3(0, 1, 0));
 
       glm::mat4 projection = glm::perspective(
         45.0f, 1.0f * width / height, 0.1f, 10.0f);
