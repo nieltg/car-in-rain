@@ -63,9 +63,9 @@ Rain::Rain (void) {
   draw_len = vertices.size();
 }
 
-void Rain::draw (glm::mat4 _vp) {
+void Rain::draw (glm::mat4 _v, glm::mat4 _p) {
   glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0, 0.0, -4.0));
-  glm::mat4 mvp = _vp * model;
+  glm::mat4 mvp = _p * _v * model;
 
   program->use();
   program->setUniform(i_uniform_mvp, mvp);

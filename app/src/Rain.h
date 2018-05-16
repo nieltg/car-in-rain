@@ -19,7 +19,7 @@ public:
 
   Rain (void);
 
-  void draw (glm::mat4 _vp);
+  void draw (glm::mat4 _v, glm::mat4 _p);
 
 private:
   std::unique_ptr<globjects::Program> program;
