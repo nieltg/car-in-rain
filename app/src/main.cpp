@@ -117,6 +117,8 @@ int main(int argc, char** argv) {
         glm::vec3(0.0, 2.0, 0.0),
         glm::vec3(0.0, 0.0, -4.0),
         glm::vec3(0.0, 1.0, 0.0));
+      view = glm::translate(view, glm::vec3(0.0, 0.0, -4.0));
+
       glm::mat4 projection = glm::perspective(
         45.0f, 1.0f * width / height, 0.1f, 10.0f);
 
