@@ -2,7 +2,9 @@
 
 attribute vec3 coord3d;
 
-uniform mat4 mvp;
+uniform mat4 m;
+uniform mat4 v;
+uniform mat4 p;
 uniform uint time;
 
 varying vec2 f_texcoord;
@@ -38,5 +40,6 @@ void main (void) {
       break;
   }
 
+  mat4 mvp = p * v * m;
   gl_Position = mvp * vec4(pos, 1.0);
 }
