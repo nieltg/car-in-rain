@@ -15,7 +15,7 @@
 
 class Exhaust {
 public:
-  const int N_PARTICLE = 1000;
+  const int N_PARTICLE = 10000;
 
   Exhaust (void);
 
@@ -30,9 +30,12 @@ private:
   std::unique_ptr<globjects::AbstractStringSource> shader_f_preprocessed;
   std::unique_ptr<globjects::Shader> shader_f;
 
+  std::unique_ptr<globjects::Texture> texture;
+
   gl::GLint i_attr_coord3d;
   gl::GLint i_uniform_mvp;
   gl::GLint i_uniform_time;
+  gl::GLint i_uniform_tex;
 
   std::unique_ptr<globjects::VertexArray> vao;
   std::unique_ptr<globjects::Buffer> b_vertices;

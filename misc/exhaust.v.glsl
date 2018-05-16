@@ -4,7 +4,9 @@ attribute vec3 coord3d;
 
 uniform mat4 mvp;
 uniform uint time;
-varying vec2 uv;
+
+varying vec2 f_texcoord;
+
 
 void main (void) {
   float time2 = time;
@@ -20,19 +22,19 @@ void main (void) {
   int id = gl_VertexID & 3;
   switch (id) {
     case 0:
-      uv = vec2(0.0, 0.0);
+      f_texcoord = vec2(0.0, 0.0);
       break;
     case 1:
-      pos += vec3(0.5, 0.0, 0.0);
-      uv = vec2(1.0, 0.0);
+      pos += vec3(0.3, 0.0, 0.0);
+      f_texcoord = vec2(1.0, 0.0);
       break;
     case 2:
-      pos += vec3(0.5, 0.5, 0.0);
-      uv = vec2(1.0, 1.0);
+      pos += vec3(0.3, 0.3, 0.0);
+      f_texcoord = vec2(1.0, 1.0);
       break;
     case 3:
-      pos += vec3(0.0, 0.5, 0.0);
-      uv = vec2(0.0, 1.0);
+      pos += vec3(0.0, 0.3, 0.0);
+      f_texcoord = vec2(0.0, 1.0);
       break;
   }
 

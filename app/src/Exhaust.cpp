@@ -2,6 +2,7 @@
 #include <vector>
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -31,6 +32,9 @@ Exhaust::Exhaust (void) {
   i_attr_coord3d = program->getAttributeLocation("coord3d");
   i_uniform_mvp = program->getUniformLocation("mvp");
   i_uniform_time = program->getUniformLocation("time");
+  i_uniform_tex = program->getUniformLocation("texture");
+
+  program->setUniform(i_uniform_tex, 0);
 
   // Vertices.
   std::vector<glm::vec3> vertices;
@@ -65,15 +69,43 @@ Exhaust::Exhaust (void) {
   }
 
   draw_len = vertices.size();
+
+  // Texture.
+  {
+    auto res_texture = IMG_Load("misc/smoke.png");
+
+    if (!res_texture) {
+      throw std::runtime_error("Unable to load misc/smoke.png");
+    }
+
+    texture = globjects::Texture::create(gl::GL_TEXTURE_2D);
+    texture->setParameter(gl::GL_TEXTURE_MIN_FILTER, gl::GL_LINEAR);
+
+    texture->image2D(
+      0,
+      gl::GL_RGBA,
+      glm::ivec2(res_texture->w, res_texture->h),
+      0,
+      gl::GL_RGBA,
+      gl::GL_UNSIGNED_BYTE,
+      res_texture->pixels);
+
+    SDL_FreeSurface(res_texture);
+  }
 }
 
 void Exhaust::draw (glm::mat4 _v, glm::mat4 _p) {
   glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0, 0.0, -4.0));
   glm::mat4 mvp = _p * _v * model;
 
+  gl::glActiveTexture(gl::GL_TEXTURE0);
+  texture->bind();
+
   program->use();
   program->setUniform(i_uniform_mvp, mvp);
   program->setUniform(i_uniform_time, SDL_GetTicks());
   vao->drawArrays(gl::GL_QUADS, 0, draw_len);
   program->release();
+
+  texture->unbind();
 }
