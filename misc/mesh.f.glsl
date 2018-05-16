@@ -10,8 +10,11 @@
 varying vec4 position;
 // surface normal vector in world space
 varying vec3 varyingNormalDirection;
+varying vec2 f_texcoord;
 uniform mat4 m, v, p;
 uniform mat4 v_inv;
+// texture
+uniform sampler2D texture;
 
 struct lightSource {
   vec4 position;
@@ -121,5 +124,8 @@ void main () {
     totalLighting = totalLighting + diffuseReflection + specularReflection;
   }
 
-  gl_FragColor = vec4(totalLighting, 1.0);
+  vec2 flipped_texcoord = vec2(f_texcoord.x, 1.0 - f_texcoord.y);
+  vec4 tex = texture2D(texture, flipped_texcoord);
+
+  gl_FragColor = tex * vec4(totalLighting, 1.0);
 }

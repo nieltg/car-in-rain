@@ -7,7 +7,9 @@ uniform uint time;
 
 void main (void) {
   vec3 pos = coord3d;
-  pos.y = mod(pos.y - (time / 500.0), 4);
+
+  float time1 = time;
+  pos.y = mod(pos.y - (time1 / 500.0), 4);
 
   if ((gl_VertexID & 1) == 0) {
     pos.y += 0.1;
