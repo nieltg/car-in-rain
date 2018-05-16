@@ -95,7 +95,10 @@ Exhaust::Exhaust (void) {
 }
 
 void Exhaust::draw (glm::mat4 _v, glm::mat4 _p) {
-  glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0, 0.0, -4.0));
+  glm::mat4 model = glm::mat4(1.0f);
+  model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0, 1.0, 0.0));
+  model = glm::translate(model, glm::vec3(5.5, 0.0, 0.0));
+
   glm::mat4 mvp = _p * _v * model;
 
   gl::glActiveTexture(gl::GL_TEXTURE0);
