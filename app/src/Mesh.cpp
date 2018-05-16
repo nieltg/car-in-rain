@@ -30,11 +30,15 @@ Mesh::Mesh (void) {
   program = globjects::Program::create();
   program->attach(shader_v.get(), shader_f.get());
 
-  i_attr_coord3d = program->getAttributeLocation("coord3d");
-  i_attr_normal = program->getAttributeLocation("norm");
+  i_attr_coord3d = program->getAttributeLocation("v_coord");
+  i_attr_normal = program->getAttributeLocation("v_normal");
   i_attr_texcoord = program->getAttributeLocation("texcoord");
-  i_uniform_mvp = program->getUniformLocation("mvp");
-  i_uniform_tex = program->getAttributeLocation("mytexture");
+  i_uniform_m = program->getUniformLocation("m");
+  i_uniform_v = program->getUniformLocation("v");
+  i_uniform_p = program->getUniformLocation("p");
+  i_uniform_m_3x3_inv_transp = program->getUniformLocation("m_3x3_inv_transp");
+  i_uniform_v_inv = program->getUniformLocation("v_inv");
+  i_uniform_tex = program->getUniformLocation("texture");
 
   program->setUniform(i_uniform_tex, 0);
 
@@ -133,22 +137,26 @@ Mesh::Mesh (void) {
   }
 }
 
-void Mesh::draw (glm::mat4 _vp) {
+void Mesh::draw (glm::mat4 _v, glm::mat4 _p) {
   float angle = SDL_GetTicks() / 1000.0 * glm::radians(15.0);
 
   glm::mat4 anim =
     glm::rotate(glm::mat4(1.0f), angle*3.0f, glm::vec3(1, 0, 0))
     * glm::rotate(glm::mat4(1.0f), angle*2.0f, glm::vec3(0, 1, 0))
     * glm::rotate(glm::mat4(1.0f), angle*4.0f, glm::vec3(0, 0, 1));
-  glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0, 0.0, -4.0));
-
-  glm::mat4 mvp = _vp * model * anim;
+  glm::mat4 model = glm::mat4(1.0f) * anim;
 
   gl::glActiveTexture(gl::GL_TEXTURE0);
   texture->bind();
 
   program->use();
-  program->setUniform(i_uniform_mvp, mvp);
+  program->setUniform(i_uniform_m, model);
+  program->setUniform(i_uniform_v, _v);
+  program->setUniform(i_uniform_p, _p);
+  program->setUniform(i_uniform_m_3x3_inv_transp, glm::mat3(
+    glm::transpose(glm::inverse(model))));
+  program->setUniform(i_uniform_v_inv, glm::inverse(_v));
+
   vao->drawElements(gl::GL_TRIANGLES, draw_len, gl::GL_UNSIGNED_INT);
   program->release();
 

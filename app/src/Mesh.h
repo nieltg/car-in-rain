@@ -17,7 +17,7 @@ class Mesh {
 public:
   Mesh (void);
 
-  void draw (glm::mat4 _vp);
+  void draw (glm::mat4 _v, glm::mat4 _p);
 
 private:
   std::unique_ptr<globjects::Program> program;
@@ -39,7 +39,11 @@ private:
   gl::GLint i_attr_coord3d;
   gl::GLint i_attr_normal;
   gl::GLint i_attr_texcoord;
-  gl::GLint i_uniform_mvp;
+  gl::GLint i_uniform_m;
+  gl::GLint i_uniform_v;
+  gl::GLint i_uniform_p;
+  gl::GLint i_uniform_m_3x3_inv_transp;
+  gl::GLint i_uniform_v_inv;
   gl::GLint i_uniform_tex;
 
   size_t draw_len;
