@@ -180,6 +180,8 @@ int main(int argc, char** argv) {
 
     // you would initalise these in a main method, really.
 
+    bool is_anim = true;
+
     while (is_running) {
       SDL_Event event;
 
@@ -200,9 +202,15 @@ int main(int argc, char** argv) {
             break;
 
           case SDL_MOUSEMOTION:
-            if (event.motion.state & SDL_BUTTON_LMASK){
+            if (event.motion.state & SDL_BUTTON_LMASK) {
               yaw += (float)event.motion.xrel;
               pitch += (float)event.motion.yrel;
+            }
+            break;
+
+          case SDL_KEYUP:
+            if (event.key.keysym.sym == SDLK_a) {
+              is_anim = !is_anim;
             }
             break;
         }
@@ -217,8 +225,18 @@ int main(int argc, char** argv) {
         glm::vec3(0.0, 0.0, -4.0),
         glm::vec3(0.0, 1.0, 0.0));
       view = glm::translate(view, glm::vec3(0.0, 0.0, -4.0))
-      * glm::rotate(glm::mat4(1.0f), pitch*0.05f, glm::vec3(1, 0, 0))
-      * glm::rotate(glm::mat4(1.0f), yaw*0.05f, glm::vec3(0, 1, 0));
+        * glm::rotate(glm::mat4(1.0f), pitch*0.05f, glm::vec3(1, 0, 0))
+        * glm::rotate(glm::mat4(1.0f), yaw*0.05f, glm::vec3(0, 1, 0));
+
+      float angle = SDL_GetTicks() / 1000.0 * glm::radians(15.0);
+      glm::mat4 anim =
+        glm::rotate(glm::mat4(1.0f), angle*3.0f, glm::vec3(1, 0, 0)) *  // X axis
+        glm::rotate(glm::mat4(1.0f), angle*2.0f, glm::vec3(0, 1, 0)) *  // Y axis
+        glm::rotate(glm::mat4(1.0f), angle*4.0f, glm::vec3(0, 0, 1));   // Z axis
+
+      if (is_anim) {
+        view *= anim;
+      }
 
       glm::mat4 projection = glm::perspective(
         45.0f, 1.0f * width / height, 0.1f, 10.0f);
