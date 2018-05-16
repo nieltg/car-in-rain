@@ -21,7 +21,7 @@ class Smoke {
 
 		Smoke (void);
 
-		void draw (glm::mat4 _vp, glm::mat4 _v);
+		void draw (glm::mat4 _v, glm::mat4 _p);
 
 		int findUnusedParticle();
 		void sortParticles();

@@ -35,7 +35,7 @@ Smoke::Smoke (void) {
 
 	TextureID = program->getUniformLocation("myTextureSampler");
 
-	const gl::GLfloat vertex_buffer_data[] = { 
+	const gl::GLfloat vertex_buffer_data[] = {
 		 -0.5f, -0.5f, 0.0f,
 		0.5f, -0.5f, 0.0f,
 		 -0.5f,0.5f, 0.0f,
@@ -137,13 +137,14 @@ Smoke::Smoke (void) {
 	}
 }
 
-void Smoke::draw (glm::mat4 _vp, glm::mat4 _v) {
+void Smoke::draw (glm::mat4 _v, glm::mat4 _p) {
 	glm::vec3 CameraPosition(glm::inverse(_v)[3]);
 	//int count = simulateParticles(SDL_GetTicks(), CameraPosition);
 	int count = 1000;
 
 	glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0, 0.0, -4.0));
-	glm::mat4 mvp = _vp * model;
+	glm::mat4 vp = _p * _v;
+	glm::mat4 mvp = vp * model;
 
 	gl::glActiveTexture(gl::GL_TEXTURE0);
 	texture->bind();
@@ -151,7 +152,7 @@ void Smoke::draw (glm::mat4 _vp, glm::mat4 _v) {
 	program->use();
 	program->setUniform(CameraRight_worldspace_ID, glm::vec3(_v[0][0],_v[1][0],_v[2][0]));
 	program->setUniform(CameraUp_worldspace_ID, glm::vec3(_v[0][1],_v[1][1],_v[2][1]));
-	program->setUniform(ViewProjMatrixID, &_vp[0][0]);
+	program->setUniform(ViewProjMatrixID, &vp[0][0]);
 
 	{
 		auto vao_bind = vao->binding(1);

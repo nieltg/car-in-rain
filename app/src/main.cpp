@@ -120,11 +120,9 @@ int main(int argc, char** argv) {
       glm::mat4 projection = glm::perspective(
         45.0f, 1.0f * width / height, 0.1f, 10.0f);
 
-      glm::mat4 vp = projection * view;
-
-      mesh.draw(vp);
-      rain.draw(vp);
-      smoke.draw(vp,view);
+      mesh.draw(view, projection);
+      rain.draw(view, projection);
+      smoke.draw(view, projection);
       SDL_GL_SwapWindow(window);
     }
   }
