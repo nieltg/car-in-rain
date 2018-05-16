@@ -118,11 +118,11 @@ int main(int argc, char** argv) {
 
   // Create an application window with the following settings:
   SDL_Window* window = SDL_CreateWindow(
-    "OpenGL SDL2 Demo",       // Window title.
-    SDL_WINDOWPOS_UNDEFINED,  // Initial x position.
-    SDL_WINDOWPOS_UNDEFINED,  // Initial y position.
-    640,                      // Width, in pixels.
-    480,                      // Height, in pixels.
+    "IF3260 Grafika Komputer",    // Window title.
+    SDL_WINDOWPOS_UNDEFINED,      // Initial x position.
+    SDL_WINDOWPOS_UNDEFINED,      // Initial y position.
+    640,                          // Width, in pixels.
+    480,                          // Height, in pixels.
     SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
   if (window == nullptr) {
     log_func_error("SDL_CreateWindow", SDL_GetError());
@@ -180,7 +180,7 @@ int main(int argc, char** argv) {
 
     // you would initalise these in a main method, really.
 
-    bool is_anim = true;
+    bool is_anim = false;
 
     while (is_running) {
       SDL_Event event;
