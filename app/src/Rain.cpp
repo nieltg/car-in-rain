@@ -13,13 +13,13 @@
 
 Rain::Rain (void) {
   // Shaders.
-  shader_v_src = globjects::Shader::sourceFromFile("misc/rain.v.glsl");
+  shader_v_src = globjects::Shader::sourceFromFile("rain.v.glsl");
   shader_v_preprocessed = globjects::Shader::applyGlobalReplacements(
     shader_v_src.get());
   shader_v = globjects::Shader::create(
     gl::GL_VERTEX_SHADER, shader_v_preprocessed.get());
 
-  shader_f_src = globjects::Shader::sourceFromFile("misc/rain.f.glsl");
+  shader_f_src = globjects::Shader::sourceFromFile("rain.f.glsl");
   shader_f_preprocessed = globjects::Shader::applyGlobalReplacements(
     shader_f_src.get());
   shader_f = globjects::Shader::create(

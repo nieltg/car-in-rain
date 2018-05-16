@@ -14,13 +14,13 @@
 
 Exhaust::Exhaust (void) {
   // Shaders.
-  shader_v_src = globjects::Shader::sourceFromFile("misc/exhaust.v.glsl");
+  shader_v_src = globjects::Shader::sourceFromFile("exhaust.v.glsl");
   shader_v_preprocessed = globjects::Shader::applyGlobalReplacements(
     shader_v_src.get());
   shader_v = globjects::Shader::create(
     gl::GL_VERTEX_SHADER, shader_v_preprocessed.get());
 
-  shader_f_src = globjects::Shader::sourceFromFile("misc/exhaust.f.glsl");
+  shader_f_src = globjects::Shader::sourceFromFile("exhaust.f.glsl");
   shader_f_preprocessed = globjects::Shader::applyGlobalReplacements(
     shader_f_src.get());
   shader_f = globjects::Shader::create(
@@ -74,10 +74,10 @@ Exhaust::Exhaust (void) {
 
   // Texture.
   {
-    auto res_texture = IMG_Load("misc/smoke.png");
+    auto res_texture = IMG_Load("exhaust.png");
 
     if (!res_texture) {
-      throw std::runtime_error("Unable to load misc/smoke.png");
+      throw std::runtime_error("Unable to load exhaust.png");
     }
 
     texture = globjects::Texture::create(gl::GL_TEXTURE_2D);
