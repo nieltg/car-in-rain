@@ -1,12 +1,19 @@
-varying vec3 f_coord3d;
-varying vec2 f_texcoord;
-varying vec3 f_norm;
-uniform sampler2D mytexture;
+#version 140
+
+/**
+ * From the OpenGL Programming wikibook: http://en.wikibooks.org/wiki/OpenGL_Programming
+ * This file is in the public domain.
+ * Contributors: Martin Kraus, Sylvain Beucler
+ */
+
+// position of the vertex (and fragment) in world space
+varying vec4 position;
+// surface normal vector in world space
+varying vec3 varyingNormalDirection;
 uniform mat4 m, v, p;
 uniform mat4 v_inv;
 
-struct lightSource
-{
+struct lightSource {
   vec4 position;
   vec4 diffuse;
   vec4 specular;
@@ -15,89 +22,104 @@ struct lightSource
   vec3 spotDirection;
 };
 
-struct material
-{
+const int numberOfLights = 2;
+lightSource lights[numberOfLights];
+lightSource light0 = lightSource(
+  vec4(0.0, 1.0, 2.0, 1.0),
+  vec4(1.0, 1.0, 1.0, 1.0),
+  vec4(1.0, 1.0, 1.0, 1.0),
+  0.0, 1.0, 0.0,
+  180.0, 0.0,
+  vec3(0.0, 0.0, 0.0));
+
+lightSource light1 = lightSource(
+  vec4(0.0, -2.0, 0.0, 1.0),
+  vec4(2.0, 0.0, 0.0, 1.0),
+  vec4(0.1, 0.1, 0.1, 1.0),
+  0.0, 1.0, 0.0,
+  80.0, 10.0,
+  vec3(0.0, 1.0, 0.0));
+
+vec4 scene_ambient = vec4(0.2, 0.2, 0.2, 1.0);
+
+struct material {
   vec4 ambient;
   vec4 diffuse;
   vec4 specular;
   float shininess;
 };
 
-void main(void) {
+material frontMaterial = material(
+  vec4(0.2, 0.2, 0.2, 1.0),
+  vec4(1.0, 0.8, 0.8, 1.0),
+  vec4(1.0, 1.0, 1.0, 1.0),
+  5.0);
 
-  //create specific lights and materials for this shader
-  lightSource light0 = lightSource(
-    vec4(0.0,  1.0,  2.0, 1.0),
-    vec4(1.0,  1.0,  1.0, 1.0),
-    vec4(1.0,  1.0,  1.0, 1.0),
-    0.0, 1.0, 0.0,
-    180.0, 0.0,
-    vec3(0.0, 0.0, 0.0)
-  );
-  material myMaterial = material(
-    vec4(0.2, 0.2, 0.2, 1.0),
-    vec4(1.0, 0.8, 0.8, 1.0),
-    vec4(1.0, 1.0, 1.0, 1.0),
-    512.0
-  );
+void main () {
+  lights[0] = light0;
+  lights[1] = light1;
 
-  vec3 normalDirection = normalize(f_norm);
-  vec3 viewDirection = normalize(vec3(v_inv * vec4(0.0, 0.0, 0.0, 1.0) - f_coord3d));
+  vec3 normalDirection = normalize(varyingNormalDirection);
+  vec3 viewDirection = normalize(
+    vec3(v_inv * vec4(0.0, 0.0, 0.0, 1.0) - position));
   vec3 lightDirection;
   float attenuation;
 
-  //initialize total lighting with ambient lighting
-  vec4 scene_ambient = vec4(0.2, 0.2, 0.2, 1.0);
-  vec3 totalLighting = vec3(scene_ambient) * vec3(myMaterial.ambient);
+  // initialize total lighting with ambient lighting
+  vec3 totalLighting = vec3(scene_ambient) * vec3(frontMaterial.ambient);
 
-  if (light0.position.w == 0.0) //directional light?
-  {
-    attenuation = 1.0;
-    lightDirection = normalize(vec3(light0.position));
-  }
-  else
-  {
-    vec3 positionToLightSource = vec3(light0.position - f_coord3d);
-    float distance = length(positionToLightSource);
-    lightDirection = normalize(positionToLightSource); 
-	  attenuation = 1.0 / (light0.constantAttenuation
-			       + light0.linearAttenuation * distance
-			       + light0.quadraticAttenuation * distance * distance);
+  // for all light sources
+  for (int index = 0; index < numberOfLights; index++) {
+    // directional light?
+    if (0.0 == lights[index].position.w) {
+      attenuation = 1.0; // no attenuation
+      lightDirection = normalize(vec3(lights[index].position));
+    } else {
+      // point light or spotlight (or other kind of light)
+      vec3 positionToLightSource = vec3(lights[index].position - position);
+      float distance = length(positionToLightSource);
+      lightDirection = normalize(positionToLightSource);
+      attenuation = 1.0 / (
+        lights[index].constantAttenuation
+        + lights[index].linearAttenuation * distance
+        + lights[index].quadraticAttenuation * distance * distance);
 
-    if (light0.spotCutoff <= 90.0) //spotlight?
-    {
-      float clampedCosine = max(0.0, dot(-lightDirection, normalize(light0.spotDirection)));
-	    if (clampedCosine < cos(radians(light0.spotCutoff))) // outside of spotlight cone?
-      {
-        attenuation = 0.0;
-      }
-      else
-      {
-        attenuation += pow(clampedCosine, light0.spotExponent);
+      if (lights[index].spotCutoff <= 90.0) {
+        // spotlight?
+        float clampedCosine = max(
+          0.0, dot(-lightDirection, normalize(lights[index].spotDirection)));
+        if (clampedCosine < cos(radians(lights[index].spotCutoff))) {
+          // outside of spotlight cone?
+          attenuation = 0.0;
+        } else {
+          attenuation = attenuation * pow(
+            clampedCosine, lights[index].spotExponent);
+        }
       }
     }
+
+    vec3 diffuseReflection = attenuation
+      * vec3(lights[index].diffuse)
+      * vec3(frontMaterial.diffuse)
+      * max(0.0, dot(normalDirection, lightDirection));
+
+    vec3 specularReflection;
+    if (dot(normalDirection, lightDirection) < 0.0) {
+      // light source on the wrong side?
+      specularReflection = vec3(0.0, 0.0, 0.0); // no specular reflection
+    } else {
+      // light source on the right side
+      specularReflection = attenuation
+        * vec3(lights[index].specular)
+        * vec3(frontMaterial.specular)
+        * pow(max(0.0, dot(
+          reflect(
+            -lightDirection, normalDirection), viewDirection)),
+            frontMaterial.shininess);
+    }
+
+    totalLighting = totalLighting + diffuseReflection + specularReflection;
   }
-  
-  vec3 diffuseReflection = attenuation 
-	  * vec3(light0.diffuse) * vec3(myMaterial.diffuse)
-	  * max(0.0, dot(normalDirection, lightDirection));
-  vec3 specularReflection;
-  if (dot(normalDirection, lightDirection) < 0.0) // light source on the wrong side?
-  {
-    specularReflection = vec3(0.0, 0.0, 0.0); // no specular reflection
-  }
-  else
-  {
-    specularReflection = attenuation * vec3(light0.specular) * vec3(myMaterial.specular)
-	    * pow(max(0.0, dot(reflect(-lightDirection, normalDirection), viewDirection)), myMaterial.shininess);
-  }
 
-  totalLighting += diffuseReflection + specularReflection;
-
-  vec4 finalLighting = vec4(totalLighting, 1.0);
-
-  vec2 flipped_texcoord = vec2(f_texcoord.x, 1.0 - f_texcoord.y);
-  vec4 texture = texture2D(mytexture, flipped_texcoord);
-
-  gl_FragColor = texture * finalLighting;
+  gl_FragColor = vec4(totalLighting, 1.0);
 }

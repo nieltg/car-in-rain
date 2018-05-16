@@ -1,18 +1,24 @@
-attribute vec3 coord3d;
-attribute vec2 texcoord;
-attribute vec3 norm;
-varying vec3 f_coord3d;
-varying vec2 f_texcoord;
-varying vec3 f_norm;
-uniform mat4 mvp;
+#version 140
+
+/**
+ * From the OpenGL Programming wikibook: http://en.wikibooks.org/wiki/OpenGL_Programming
+ * This file is in the public domain.
+ * Contributors: Martin Kraus, Sylvain Beucler
+ */
+
+attribute vec3 v_coord;
+attribute vec3 v_normal;
+// position of the vertex (and fragment) in world space
+varying vec4 position;
+// surface normal vector in world space
+varying vec3 varyingNormalDirection;
 uniform mat4 m, v, p;
-uniform mat4 v_inv;
+uniform mat3 m_3x3_inv_transp;
 
+void main () {
+  position = m * vec4(v_coord, 1.0);
+  varyingNormalDirection = normalize(m_3x3_inv_transp * v_normal);
 
-void main(void) {
-  gl_Position = mvp * vec4(coord3d, 1.0);
-  f_texcoord = texcoord;
-  //pass attribute to fragment shader
-  f_coord3d = coord3d;
-  f_norm = norm;
+  mat4 mvp = p * v * m;
+  gl_Position = mvp * vec4(v_coord, 1.0);
 }
