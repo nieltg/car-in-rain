@@ -13,7 +13,7 @@
 
 #include "Mesh.h"
 #include "Rain.h"
-#include "Smoke.h"
+#include "Exhaust.h"
 
 // Utilities
 
@@ -78,7 +78,7 @@ int main(int argc, char** argv) {
 
     Mesh mesh;
     Rain rain;
-    Smoke smoke;
+    Exhaust smoke;
 
     gl::glEnable(gl::GL_BLEND);
     gl::glEnable(gl::GL_DEPTH_TEST);
@@ -126,7 +126,7 @@ int main(int argc, char** argv) {
         glm::vec3(0.0, 2.0, 0.0),
         glm::vec3(0.0, 0.0, -4.0),
         glm::vec3(0.0, 1.0, 0.0));
-      view = glm::translate(view, glm::vec3(0.0, 0.0, -4.0)) 
+      view = glm::translate(view, glm::vec3(0.0, 0.0, -4.0))
       * glm::rotate(glm::mat4(1.0f), pitch*0.05f, glm::vec3(1, 0, 0))
       * glm::rotate(glm::mat4(1.0f), yaw*0.05f, glm::vec3(0, 1, 0));
 
