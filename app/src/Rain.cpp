@@ -38,7 +38,7 @@ Rain::Rain (void) {
   std::random_device rd;
   std::mt19937 generator(rd());
 
-  std::uniform_real_distribution<> r(-5.0, 5.0);
+  std::uniform_real_distribution<> r(-10.0, 10.0);
 
   for (int i = 0; i < N_PARTICLE; ++i) {
     glm::vec3 pos = glm::vec3(r(generator), r(generator), r(generator));
