@@ -15,7 +15,7 @@
 
 class Rain {
 public:
-  const int N_PARTICLE = 1000;
+  const int N_PARTICLE = 125000;
 
   Rain (void);
 

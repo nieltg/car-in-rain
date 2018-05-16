@@ -30,7 +30,9 @@ Exhaust::Exhaust (void) {
   program->attach(shader_v.get(), shader_f.get());
 
   i_attr_coord3d = program->getAttributeLocation("coord3d");
-  i_uniform_mvp = program->getUniformLocation("mvp");
+  i_uniform_m = program->getUniformLocation("m");
+  i_uniform_v = program->getUniformLocation("v");
+  i_uniform_p = program->getUniformLocation("p");
   i_uniform_time = program->getUniformLocation("time");
   i_uniform_tex = program->getUniformLocation("texture");
 
@@ -105,7 +107,9 @@ void Exhaust::draw (glm::mat4 _v, glm::mat4 _p) {
   texture->bind();
 
   program->use();
-  program->setUniform(i_uniform_mvp, mvp);
+  program->setUniform(i_uniform_m, model);
+  program->setUniform(i_uniform_v, _v);
+  program->setUniform(i_uniform_p, _p);
   program->setUniform(i_uniform_time, SDL_GetTicks());
   vao->drawArrays(gl::GL_QUADS, 0, draw_len);
   program->release();

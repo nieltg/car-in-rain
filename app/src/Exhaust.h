@@ -33,7 +33,9 @@ private:
   std::unique_ptr<globjects::Texture> texture;
 
   gl::GLint i_attr_coord3d;
-  gl::GLint i_uniform_mvp;
+  gl::GLint i_uniform_m;
+  gl::GLint i_uniform_v;
+  gl::GLint i_uniform_p;
   gl::GLint i_uniform_time;
   gl::GLint i_uniform_tex;
 
