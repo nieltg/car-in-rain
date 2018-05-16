@@ -46,7 +46,7 @@ Exhaust::Exhaust (void) {
   std::mt19937 generator(seed);
 
   std::uniform_real_distribution<> r(0.5, 2.0);
-  std::uniform_real_distribution<> r2(-1.0, 1.0);
+  std::uniform_real_distribution<> r2(-4.0, 4.0);
 
   for (int i = 0; i < N_PARTICLE; ++i) {
     glm::vec3 pos = glm::vec3(r(generator), r2(generator), r(generator));
