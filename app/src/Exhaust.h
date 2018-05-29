@@ -15,7 +15,7 @@
 
 class Exhaust {
 public:
-  const int N_PARTICLE = 10000;
+  const int N_PARTICLE = 1000;
 
   Exhaust (void);
 

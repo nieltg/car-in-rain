@@ -242,8 +242,12 @@ int main(int argc, char** argv) {
         45.0f, 1.0f * width / height, 0.1f, 10.0f);
 
       mesh.draw(view, projection);
+
+      gl::glDepthMask(gl::GL_FALSE);
       rain.draw(view, projection);
       smoke.draw(view, projection);
+      gl::glDepthMask(gl::GL_TRUE);
+
       SDL_GL_SwapWindow(window);
 
       fpsthink();
