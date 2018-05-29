@@ -18,7 +18,7 @@ void main (void) {
   float frame = 0.1 + mod(coord3d.z - 0.5 + time1, 1.5);
 
   vec3 center;
-  center.z = -5.5 + coord3d.x / sqrt(frame);
+  center.z = -4.5 + coord3d.x / sqrt(frame);
   center.y = coord3d.x * frame;
   center.x = coord3d.y * frame;
 
